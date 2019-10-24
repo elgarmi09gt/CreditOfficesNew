@@ -15,24 +15,35 @@
     @foreach($exercices as $exercice)
         @php($RATIO[0][0] = $countrie->idPays)
         @php($RATIO[0][1] = $exercice->exercice)
-        @php($RATIO[0][2] = $ccPays($exercice->exercice,$countrie->bdPays))
-        @if($input['naturep']=='paran') {{-- Evolution if By Year--}}
-            @php($RATIO[0][3] = $ccPays($exercice->exercice,$countrie->bdPays) - $ccPays($exercice->exercice-1,$countrie->bdPays))
+        @php($ps = ($RATIO[0][2] = $ccPays($exercice->exercice,$countrie->bdPays)))
+        @if($input['naturep'] =='paran') {{-- Evolution if By Year--}}
+            @if ($loop->first)
+                @php($pp = $ccPays($exercice->exercice-1,$countrie->bdPays))
+            @endif
+            @php($RATIO[0][3] = $ps - $pp)
         @endif
         @php($RATIOS = $RATIOS->concat($RATIO))
+        @php($pp = $ps)
     @endforeach
-   @php($RV[0][0] = $countrie->idPays)
-   @php($RV[0][1] = $ccPays($exercice2,$countrie->bdPays) - $ccPays($exercice1,$countrie->bdPays))
-    @php($RATIO_V = $RATIO_V->concat($RV))
+    @if($input['naturep'] != 'paran')
+        @php($RV[0][0] = $countrie->idPays)
+        @php($RV[0][1] = $ccPays($exercice2,$countrie->bdPays) - $ccPays($exercice1,$countrie->bdPays))
+        @php($RATIO_V = $RATIO_V->concat($RV))
+    @endif
 @endforeach
 @foreach($exercices as $exercice) {{-- Calculate cc For UEMOA for etheir YEAR --}}
     @php ($RU[0][0] = ($exercice->exercice))
-    @php ($RU[0][1] = $ccUEMOA($exercice->exercice))
+    @php ($ps = ($RU[0][1] = $ccUEMOA($exercice->exercice)))
     @if($input['naturep'] == 'paran') {{-- UEMOA Evolution If By YEAR --}}
-        @php($RU[0][2] = $ccUEMOA($exercice->exercice) - $ccUEMOA($exercice->exercice-1))
+        @if($loop->first)
+            @php($pp = $ccUEMOA($exercice->exercice-1))
+            @php($RU[0][2] = $ps - $pp)
+        @endif
     @endif
     @php($RATIO_U = $RATIO_U->concat($RU))
+    @php($pp = $ps)
 @endforeach
+
 @if($input['naturep'] != 'paran')
     @php($RATIO_VU [] = ($ccUEMOA($exercice2) - $ccUEMOA($exercice1)))
 @endif
