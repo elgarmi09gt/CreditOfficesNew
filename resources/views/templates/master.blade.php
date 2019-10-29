@@ -151,7 +151,7 @@
                                 <span>Agr&eacute;gats Finaciers</span></a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{ route('entreprise.ratios_res.create',['pays' => $pays])}}">
                                 <span>Agr&eacute;gats Finaciers D&eacute;taill&eacute;</span></a>
                         </li>
                         <li>

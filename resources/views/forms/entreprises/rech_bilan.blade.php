@@ -48,7 +48,7 @@
 @section("forms")
 <div class="card-body">
     <form action="{{ route('entreprise.bilan.store', ['pays' => $pays]) }}" method="post" target="index">
-        @include('forms._entreprise_form')
+        @include('forms.entreprises._entreprise_form')
         <div class="form-group">
             <div class="col col-md-5"></div>
             <div class="col">

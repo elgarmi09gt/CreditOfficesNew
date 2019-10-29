@@ -50,7 +50,7 @@
     <div class="card-body">
 
         <form action="{{ route('entreprise.poste.bilan.store', ['pays' => $pays]) }}" method="post" target="index">
-            @include('forms._entreprise_form')
+            @include('forms.entreprises._entreprise_form')
             <div class="form-group row" style="text-align: center">
                 <div class="col" >
 
