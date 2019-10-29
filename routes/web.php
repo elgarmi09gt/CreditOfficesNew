@@ -27,8 +27,10 @@ Route::post('/bilan_poste_sa', 'SectorActivityController@bilan_post')->name('sa.
  * For Ratios
  */
 Route::get('/ratios/{pays?}', 'RatioController@index_ratio')->name('entreprise.ratio.create');
+Route::get('/ratios_res/{pays?}', 'RatioController@index_ratios_res')->name('entreprise.ratios_res.create');
 
 Route::post('/ratios', 'RatioController@ratio')->name('ratio.store');
+Route::post('/ratios_res', 'RatioController@ratio_res')->name('ratios_res.store');
 /*
  * Route for Service Supplement
  */
