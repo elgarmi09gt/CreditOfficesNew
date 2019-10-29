@@ -14,6 +14,508 @@ class GetRatiosHelpers
     public static function FormatRatio(){
 
     }
+
+    /* 1. Produit Bancaire */
+    public static function pb($entreprise, $exercice){
+        $pb = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[65,66,67,68,69,70,71,72,73,74,75,87])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$pb): $pb = 0 ; else: $pb = (int)$pb->total; endif;
+        return $pb;
+    }
+    public static function pbPays($exercice){
+        $pb = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[65,66,67,68,69,70,71,72,73,74,75,87])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$pb): $pb = 0 ; else: $pb = (int)$pb->total; endif;
+        return $pb;
+    }
+    public static function pbUEMOA($exercice){
+        $pb = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[65,66,67,68,69,70,71,72,73,74,75,87])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$pb): $pb = 0 ; else: $pb = (int)$pb->total; endif;
+        return $pb;
+    }
+    /* 2. Charge Bancaire */
+    public static function cb($entreprise, $exercice){
+        $cb = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[43,44,45,46,47,48,49,50,51,52,86])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$cb): $cb = 0 ; else: $cb = (int)$cb->total; endif;
+        return $cb;
+
+    }
+    public static function cbPays($exercice){
+        $cb = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[43,44,45,46,47,48,49,50,51,52,86])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$cb): $cb = 0 ; else: $cb = (int)$cb->total; endif;
+        return $cb;
+
+    }
+    public static function cbUEMOA($exercice){
+        $cb = DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[43,44,45,46,47,48,49,50,51,52,86])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$cb): $cb = 0 ; else: $cb = (int)$cb->total; endif;
+        return $cb;
+
+    }
+    /* 3. Produit Net Bancaire (1-2) */
+    public static function pnb($entreprise, $exercice){
+    
+        return (GetRatiosHelpers::pb($entreprise, $exercice) - GetRatiosHelpers::cb($entreprise, $exercice));
+    }
+    public static function pnbPays($exercice){
+    
+        return (GetRatiosHelpers::pbPays($exercice) - GetRatiosHelpers::cbPays($exercice));
+    }
+    public static function pnbUEMOA($exercice){
+    
+        return (GetRatiosHelpers::pbUEMOA($exercice) - GetRatiosHelpers::cbUEMOA($exercice));
+    }
+    /* 4. Produits Accessoires Net */
+    public static function pan($entreprise, $exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[76,77,78,79])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[53,54,55])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function panPays($exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[76,77,78,79])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[53,54,55])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function panUEMOA($exercice){
+        $op1 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[76,77,78,79])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[53,54,55])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    /* 5. Produit Global D'exploitation (3+4) */
+    public static function pge($entreprise, $exercice){
+    
+        return (GetRatiosHelpers::pan($entreprise, $exercice)+ GetRatiosHelpers::pnb($entreprise, $exercice));
+    }
+    public static function pgePays($exercice){
+    
+        return (GetRatiosHelpers::panPays($exercice)+ GetRatiosHelpers::pnbPays($exercice));
+    }
+    public static function pgeUEMOA($exercice){
+    
+        return (GetRatiosHelpers::panUEMOA($exercice)+ GetRatiosHelpers::pnbUEMOA($exercice));
+    }
+    /* 6. Frais Generaux */
+    public static function fg($entreprise, $exercice){
+        $fg = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[56,57])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$fg): $fg = 0 ; else: $fg = (int)$fg->total; endif;
+        return $fg;
+    }
+   public static function fgPays($exercice){
+        $fg = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[56,57])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$fg): $fg = 0 ; else: $fg = (int)$fg->total; endif;
+        return $fg;
+    }
+   public static function fgUEMOA($exercice){
+        $fg = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[56,57])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$fg): $fg = 0 ; else: $fg = (int)$fg->total; endif;
+        return $fg;
+    }
+    /* 7. Amortissement et Provision Net Sur Immobilisation */
+    public static function api($entreprise, $exercice){
+        $api = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[58,80])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
+        return $api;
+    }
+    public static function apiPays($exercice){
+        $api = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[58,80])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
+        return $api;
+    }
+    public static function apiUEMOA($exercice){
+        $api = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[58,80])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
+        return $api;
+    }
+    /* 8. Resultat Brut D'exploitation apres amortissement */
+    public static function rbeaamor($entreprise, $exercice){
+        return (GetRatiosHelpers::pge($entreprise, $exercice)- GetRatiosHelpers::fg($entreprise, $exercice)- GetRatiosHelpers::api($entreprise, $exercice));
+    }
+    public static function rbeaamorPays($exercice){
+        return (GetRatiosHelpers::pgePays($exercice)- GetRatiosHelpers::fgPays($exercice)- GetRatiosHelpers::apiPays($exercice));
+    }
+    public static function rbeaamorUEMOA($exercice){
+        return (GetRatiosHelpers::pgeUEMOA($exercice)- GetRatiosHelpers::fgUEMOA($exercice)- GetRatiosHelpers::apiUEMOA($exercice));
+    }
+    /* 9. Provision Net Sur Risque */
+    public static function pnr($entreprise, $exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[81,82])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[59,60])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function pnrPays($exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[81,82])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[59,60])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function pnrUEMOA($exercice){
+        $op1 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[81,82])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[59,60])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    /* 10. Interet sur creance douteuse */
+    public static function icdl($entreprise, $exercice){
+        return '0';
+    }
+    public static function icdlPays($exercice){
+        return '0';
+    }
+    public static function icdlUEMOA($exercice){
+        return '0';
+    }
+    /* 11. Resultat D'exploitation (8-9+10) */
+    public static function re($entreprise, $exercice){
+        return (GetRatiosHelpers::rbeaamor($entreprise, $exercice)- GetRatiosHelpers::pnr($entreprise, $exercice));
+    }
+    public static function rePays($exercice){
+        return (GetRatiosHelpers::rbeaamorPays($exercice)- GetRatiosHelpers::pnrPays($exercice));
+    }
+    public static function reUEMOA($exercice){
+        return (GetRatiosHelpers::rbeaamorUEMOA($exercice)- GetRatiosHelpers::pnrUEMOA($exercice));
+    }
+    /* 12. Resultat Exceptionel Net */
+    public static function ren($entreprise,$exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[83])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[61])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function renPays($exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[83])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[61])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function renUEMOA($exercice){
+        $op1 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[83])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[61])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    /* 13. Resultat sur exercice Anterieur */
+    public static function rea($entreprise,$exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[84])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[62])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function reaPays($exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[84])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[62])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function reaUEMOA($exercice){
+        $op1 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[84])
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[62])
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    /* 14. Impot sur le benefice */
+    public static function ib($entreprise, $exercice){
+        $api = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->where('idRubrique',63)
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
+        return $api;
+    }
+     public static function ibPays($exercice){
+        $api = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->where('idRubrique',63)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
+        return $api;
+    }
+     public static function ibUEMOA($exercice){
+        $api = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->where('idRubrique',63)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
+        return $api;
+    }
+    /* 15. Resultat net */
+    public static function res($entreprise, $exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->where('idRubrique',64)
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->where('idRubrique',85)
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function resPays($exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->where('idRubrique',64)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->where('idRubrique',85)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function resUEMOA($exercice){
+        $op1 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->where('idRubrique',64)
+            ->where('exercice',$exercice)
+            ->first();
+
+        $op2 = DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->where('idRubrique',85)
+                ->where('exercice',$exercice)
+                ->first();
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
     /*
     * Ratio du Cout des Comptes Rénuméré ccr: (Intérêts et charges assimilées sur dettes à l\'égard de la clientèle / 
                 (Compte Rémunéré A1 - Compte Rémunéré A-1)/2)*100

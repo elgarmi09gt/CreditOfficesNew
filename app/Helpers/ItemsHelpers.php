@@ -11,6 +11,13 @@ class ItemsHelpers
     /*
      * Number SousClasse For Classe
      */
+    public static function ClassesInSupClasse($supclasse)
+    {
+        return DB::table('supClasse')
+            ->join('classe', 'classe.idSupClasse', '=', 'supClasse.idSupClasse')
+            ->where('supClasse.idSupClasse', $supclasse)
+            ->get(['supClasse.idSupClasse', 'classe.idClasse', 'nomClasse', 'nomSupClasse']);
+    }
     public static function SousClassesInClasse($classe)
     {
         return DB::table('classe')
