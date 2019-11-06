@@ -29,7 +29,7 @@ class GetBrutesHelpers
     /*
      * Calculate SUM(brut) Rubrique Same Nature on Country By Year
      */
-    public static function getBruteNaturePays($nature, $exercice, $idPays=201)
+    public static function getBruteNaturePays($nature, $exercice)
     {
         return DB::connection('sensyyg2_umeoabd')->table('classe')
             ->selectRaw('nature,SUM(lignebilan.brut) as total')
@@ -38,7 +38,6 @@ class GetBrutesHelpers
             ->join('lignebilan', 'lignebilan.idRubrique', '=', 'rubrique.idRubrique')
             ->where('nature', $nature)
             ->where('exercice', $exercice)
-            ->where('idPays', $idPays)
             ->groupby('nature')
             ->first();
     }
@@ -78,16 +77,15 @@ class GetBrutesHelpers
     /*
      * Calculate SUM(brut) For Classe on Country By Year
      */
-    public static function getBruteClassePays($classe, $exercice, $idPays=201)
+    public static function getBruteClassePays($classe, $exercice)
     {
-        return DB::connection('sensyyg2_umeoabd')->table('classe')
+        return DB::table('classe')
             ->selectRaw('classe.idClasse,SUM(lignebilan.brut) as total')
             ->join('sousclasse', 'classe.idClasse', '=', 'sousclasse.idClasse')
             ->join('rubrique', 'sousclasse.idSousClasse', '=', 'rubrique.idSousClasse')
             ->join('lignebilan', 'lignebilan.idRubrique', '=', 'rubrique.idRubrique')
             ->where('classe.idClasse', $classe)
             ->where('exercice', $exercice)
-            ->where('idPays',$idPays)
             ->groupby('classe.idClasse')
             ->first();
     }
@@ -168,14 +166,13 @@ class GetBrutesHelpers
     /*
      * Calculate SUM(Brut) For Same Rubrique In Country
      */
-    public static function getBruteRubriquePays($rubrique, $exercice, $idPays=201)
+    public static function getBruteRubriquePays($rubrique, $exercice)
     {
         return DB::connection('sensyyg2_umeoabd')
             ->table('lignebilan')
             ->selectRaw('SUM(lignebilan.brut) as total')
             ->where('idRubrique', $rubrique)
             ->where('exercice', $exercice)
-            ->where('idPays',$idPays)
             ->first();
     }
     /*

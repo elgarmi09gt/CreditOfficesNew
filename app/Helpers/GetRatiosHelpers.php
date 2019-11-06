@@ -257,7 +257,7 @@ class GetRatiosHelpers
         if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
         if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
 
-        return ($op1 - $op2);
+        return ($op2 - $op1);
     }
     public static function pnrPays($exercice){
         $op1 = DB::table('lignebilan')
@@ -274,7 +274,7 @@ class GetRatiosHelpers
         if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
         if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
 
-        return ($op1 - $op2);
+        return ($op2 - $op1);
     }
     public static function pnrUEMOA($exercice){
         $op1 = DB::connection('sensyyg2_umeoabd')
@@ -293,7 +293,7 @@ class GetRatiosHelpers
         if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
         if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
 
-        return ($op1 - $op2);
+        return ($op2 - $op1);
     }
     /* 10. Interet sur creance douteuse */
     public static function icdl($entreprise, $exercice){
