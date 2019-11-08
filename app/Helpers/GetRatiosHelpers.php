@@ -14,6 +14,160 @@ class GetRatiosHelpers
     public static function FormatRatio(){
 
     }
+    // Ratio de dstribution de credit
+    public static function rdc($entreprise,$exercice,$bd){
+        $op1 = GetRatiosHelpers::Operation_clientel_actif($entreprise,$exercice,$bd);
+        $op2 = GetRatiosHelpers::totalBilan($entreprise,$exercice,$bd);
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rdcPays($exercice,$bd){
+        $op1 = GetRatiosHelpers::Operation_clientel_actifPays($exercice,$bd);
+        $op2 = GetRatiosHelpers::totalBilanPays($exercice,$bd);
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rdcUEMOA($exercice){
+        $op1 = GetRatiosHelpers::Operation_clientel_actifUEMOA($exercice);
+        $op2 = GetRatiosHelpers::totalBilanUEMOA($exercice);
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    // Ratio de dstribution de credit
+    public static function rcd($entreprise,$exercice,$bd){
+        $op1 = GetRatiosHelpers::Operation_clientel_passif($entreprise,$exercice,$bd);
+        $op2 = GetRatiosHelpers::totalBilan($entreprise,$exercice,$bd);
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rcdPays($exercice,$bd){
+        $op1 = GetRatiosHelpers::Operation_clientel_passifPays($exercice,$bd);
+        $op2 = GetRatiosHelpers::totalBilanPays($exercice,$bd);
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rcdUEMOA($exercice){
+        $op1 = GetRatiosHelpers::Operation_clientel_passifUEMOA($exercice);
+        $op2 = GetRatiosHelpers::totalBilanUEMOA($exercice);
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+
+    // Ration d'independance financiere ou De couverture de risque
+    public static function rif($entreprise,$exercice,$bd){
+        $op1 = GetRatiosHelpers::fondPropre($entreprise,$exercice,$bd);
+        $op2 = DB::connection($bd)->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[20,21,22,23,24,25,26,27,28])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rifPays($exercice,$bd){
+        $op1 = GetRatiosHelpers::fondProprePays($exercice,$bd);
+        $op2 = DB::connection($bd)->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[20,21,22,23,24,25,26,27,28])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rifUEMOA($exercice){
+        $op1 = GetRatiosHelpers::fondPropreUEMOA($exercice);
+        $op2 = DB::connection('sensyyg2_umeoabd')->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[20,21,22,23,24,25,26,27,28])
+            ->where('exercice',$exercice)
+            ->first();
+
+        if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
+            return 0.0;
+        endif;
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    /* Dividende*/
+    public static function dividende($entreprise, $exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[39,41,42])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice)
+            ->first();
+        $op2 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[39,41])
+            ->where('idEntreprise',$entreprise)
+            ->where('exercice',$exercice+1)
+            ->first();
+
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function dividendePays($exercice){
+        $op1 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[39,41,42])
+            ->where('exercice',$exercice)
+            ->first();
+        $op2 = DB::table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[39,41])
+            ->where('exercice',$exercice+1)
+            ->first();
+
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
+    public static function dividendeUEMOA($exercice){
+        $op1 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[39,41,42])
+            ->where('exercice',$exercice)
+            ->first();
+        $op2 = DB::connection('sensyyg2_umeoabd')
+            ->table('lignebilan')
+            ->selectRaw('SUM(brut) as total')
+            ->whereIn('idRubrique',[39,41])
+            ->where('exercice',$exercice+1)
+            ->first();
+
+        if (!$op1): $op1 = 0; else: $op1 = (int) $op1->total; endif;
+        if (!$op2): $op2 = 0; else: $op2 = (int) $op2->total; endif;
+
+        return ($op1 - $op2);
+    }
 
     /* 1. Produit Bancaire */
     public static function pb($entreprise, $exercice){
@@ -622,18 +776,8 @@ class GetRatiosHelpers
         ->first();
 
         /* Dette a l'agard de la clientel */
-        $op1 = DB::connection($bd)->table('lignebilan')
-                ->selectRaw('SUM(brut) as total')
-                ->whereIn('idRubrique',[23,24,25,26,27])
-                ->where('idEntreprise',$entreprise)
-                ->where('exercice',$exercice)
-                ->first();
-        $op2 = DB::connection($bd)->table('lignebilan')
-                ->selectRaw('SUM(brut) as total')
-                ->whereIn('idRubrique',[23,24,25,26,27])
-                ->where('idEntreprise',$entreprise)
-                ->where('exercice',$exercice-1)
-                ->first();
+        $op1 = GetRatiosHelpers::Operation_clientel_passif($entreprise,$exercice,$bd);
+        $op2 = GetRatiosHelpers::Operation_clientel_passif($entreprise,$exercice-1,$bd);
         if (!$op1)  $op1 = 0 ;  else    $op1 = $op1->total;
         if (!$op2)  $op2 = 0 ;  else    $op2 = $op2->total;
         
@@ -651,18 +795,9 @@ class GetRatiosHelpers
         ->where('exercice',$exercice)
         ->first();
 
-        /* Compte rénuméré */
-        $op1 = DB::connection($bd)->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[23,24,25,26,27])
-        ->where('exercice',$exercice)
-        ->first();
-
-        $op2 = DB::connection($bd)->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[23,24,25,26,27])
-        ->where('exercice',$exercice-1)
-        ->first();
+        $op1 = GetRatiosHelpers::Operation_clientel_passifPays($exercice,$bd);
+        $op2 = GetRatiosHelpers::Operation_clientel_passifPays($exercice-1,$bd);
+        
 
         if (!$op1)  $op1 = 0 ;  else        $op1 = $op1->total;
         if (!$op2)  $op2 = 0 ;  else        $op2 = $op2->total;
@@ -680,18 +815,8 @@ class GetRatiosHelpers
         ->where('idRubrique',44)
         ->where('exercice',$exercice)
         ->first();
-        /* Compte rénuméré */
-        $op1 = DB::connection('sensyyg2_umeoabd')->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[23,24,25,26,27])
-        ->where('exercice',$exercice)
-        ->first();
-
-        $op2 = DB::connection('sensyyg2_umeoabd')->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[23,24,25,26,27])
-        ->where('exercice',$exercice-1)
-        ->first();
+        $op1 = GetRatiosHelpers::Operation_clientel_passifUEMOA($exercice);
+        $op2 = GetRatiosHelpers::Operation_clientel_passifUEMOA($exercice-1);
 
         if (!$op1)  $op1 = 0 ;  else        $op1 = $op1->total;
         if (!$op2)  $op2 = 0 ;  else        $op2 = $op2->total;
@@ -708,6 +833,54 @@ class GetRatiosHelpers
     * Ratio 1 cc: (Intérêts et produits assimilé sur creance sur la clientèle / 
                 (Creance sur la clientele A1 + Creance sur la clientele A-1)/2)*100
     */
+
+    // Operetion clientel Actif
+    public static function Operation_clientel_actif($entreprise,$exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[6,7,8,9,10,11])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_clientel_actifPays($exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[6,7,8,9,10,11])
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_clientel_actifUEMOA($exercice){
+        return DB::connection('sensyyg2_umeoabd')->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[6,7,8,9,10,11])
+                ->where('exercice',$exercice)
+                ->first();
+    }
+    // Operation clientel Passif
+    public static function Operation_clientel_passif($entreprise,$exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[23,24,25,26,27])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_clientel_passifPays($exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[23,24,25,26,27])
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_clientel_passifUEMOA($exercice){
+        return DB::connection('sensyyg2_umeoabd')->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[23,24,25,26,27])
+                ->where('exercice',$exercice)
+                ->first();
+        
+    }
     public static function cc($entreprise, $exercice, $bd){
         $numer = DB::connection($bd)->table('lignebilan')
         ->selectRaw('SUM(brut) as total')
@@ -717,18 +890,8 @@ class GetRatiosHelpers
         ->first();
 
         /* Creance sur la clientele */
-        $op1 = DB::connection($bd)->table('lignebilan')
-                ->selectRaw('SUM(brut) as total')
-                ->whereIn('idRubrique',[6,7,8,9,10,11])
-                ->where('idEntreprise',$entreprise)
-                ->where('exercice',$exercice)
-                ->first();
-        $op2 = DB::connection($bd)->table('lignebilan')
-                ->selectRaw('SUM(brut) as total')
-                ->whereIn('idRubrique',[6,7,8,9,10,11])
-                ->where('idEntreprise',$entreprise)
-                ->where('exercice',$exercice-1)
-                ->first();
+        $op1 = GetRatiosHelpers::Operation_clientel_actif($entreprise,$exercice,$bd);
+        $op2 = GetRatiosHelpers::Operation_clientel_actif($entreprise,$exercice-1,$bd);
         if (!$op1)  $op1 = 0 ;  else    $op1 = $op1->total;
         if (!$op2)  $op2 = 0 ;  else    $op2 = $op2->total;
         
@@ -746,18 +909,8 @@ class GetRatiosHelpers
         ->where('exercice',$exercice)
         ->first();
 
-        /* Compte rénuméré */
-        $op1 = DB::connection($bd)->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[6,7,8,9,10,11])
-        ->where('exercice',$exercice)
-        ->first();
-
-        $op2 = DB::connection($bd)->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[6,7,8,9,10,11])
-        ->where('exercice',$exercice-1)
-        ->first();
+        $op1 = GetRatiosHelpers::Operation_clientel_actifPays($exercice,$bd);
+        $op2 = GetRatiosHelpers::Operation_clientel_actifPays($exercice-1,$bd);
 
         if (!$op1)  $op1 = 0 ;  else        $op1 = $op1->total;
         if (!$op2)  $op2 = 0 ;  else        $op2 = $op2->total;
@@ -775,19 +928,10 @@ class GetRatiosHelpers
         ->where('idRubrique',66)
         ->where('exercice',$exercice)
         ->first();
-        /* Compte rénuméré */
-        $op1 = DB::connection('sensyyg2_umeoabd')->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[6,7,8,9,10,11])
-        ->where('exercice',$exercice)
-        ->first();
 
-        $op2 = DB::connection('sensyyg2_umeoabd')->table('lignebilan')
-        ->selectRaw('SUM(brut) as total')
-        ->whereIn('idRubrique',[6,7,8,9,10,11])
-        ->where('exercice',$exercice-1)
-        ->first();
-
+        $op1 = GetRatiosHelpers::Operation_clientel_actifUEMOA($exercice);
+        $op2 = GetRatiosHelpers::Operation_clientel_actifUEMOA($exercice-1);
+        
         if (!$op1)  $op1 = 0 ;  else        $op1 = $op1->total;
         if (!$op2)  $op2 = 0 ;  else        $op2 = $op2->total;
         
@@ -826,14 +970,9 @@ class GetRatiosHelpers
             ->where('exercice',$exercice)
             ->first();
     }
-    /*
-     * ROA : Return On Asset : Rentabilité des actifs
-     *
-     *          Resultat net / Total Bilan
-     */
-    public static function roa($entreprise, $exercice,$bd){
-        /* Total Bilan */
-        $denom = DB::connection($bd)->table('lignebilan')
+    // Total bilan
+    public static function totalBilan($entreprise,$exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total ')
             ->join('rubrique','rubrique.idRubrique','=','lignebilan.idRubrique')
             ->join('sousclasse','sousclasse.idSousclasse','=','rubrique.idSousclasse')
@@ -842,6 +981,33 @@ class GetRatiosHelpers
             ->where('exercice',$exercice)
             ->where('idEntreprise',$entreprise)
             ->first();
+    }
+    public static function totalBilanPays($exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total ')
+                ->join('rubrique','rubrique.idRubrique','=','lignebilan.idRubrique')
+                ->join('sousclasse','sousclasse.idSousclasse','=','rubrique.idSousclasse')
+                ->join('classe','classe.idClasse','=','sousclasse.idClasse')
+                ->where('nature','actif')
+                ->where('exercice',$exercice)
+                ->first();
+    }
+    public static function totalBilanUEMOA($exercice){
+        return DB::connection('sensyyg2_umeoabd')
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total ')
+                ->join('rubrique','rubrique.idRubrique','=','lignebilan.idRubrique')
+                ->join('sousclasse','sousclasse.idSousclasse','=','rubrique.idSousclasse')
+                ->join('classe','classe.idClasse','=','sousclasse.idClasse')
+                ->where('nature','actif')
+                ->where('exercice',$exercice)
+                ->first();
+    }
+
+    /** ROA : Return On Asset : Rentabilité des actifs *  Resultat net / Total Bilan **/
+    public static function roa($entreprise, $exercice,$bd){
+        
+        $denom = GetRatiosHelpers::totalBilan($entreprise,$exercice,$bd);
         /* Resultat Net */
         $numer = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total ')
@@ -855,14 +1021,7 @@ class GetRatiosHelpers
         return round(($numer->total / $denom->total)*100,2);
     }
     public static function roaPays($exercice,$bd){
-            $denom = DB::connection($bd)->table('lignebilan')
-                ->selectRaw('SUM(brut) as total ')
-                ->join('rubrique','rubrique.idRubrique','=','lignebilan.idRubrique')
-                ->join('sousclasse','sousclasse.idSousclasse','=','rubrique.idSousclasse')
-                ->join('classe','classe.idClasse','=','sousclasse.idClasse')
-                ->where('nature','actif')
-                ->where('exercice',$exercice)
-                ->first();
+            $denom = GetRatiosHelpers::totalBilanPays($exercice,$bd);
             $numer = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total ')
                 ->where('idRubrique',42)
@@ -874,15 +1033,7 @@ class GetRatiosHelpers
         return round(($numer->total / $denom->total)*100,2);
         }
         public static function roaUEMOA($exercice){
-            $denom = DB::connection('sensyyg2_umeoabd')
-                ->table('lignebilan')
-                ->selectRaw('SUM(brut) as total ')
-                ->join('rubrique','rubrique.idRubrique','=','lignebilan.idRubrique')
-                ->join('sousclasse','sousclasse.idSousclasse','=','rubrique.idSousclasse')
-                ->join('classe','classe.idClasse','=','sousclasse.idClasse')
-                ->where('nature','actif')
-                ->where('exercice',$exercice)
-                ->first();
+            $denom = GetRatiosHelpers::totalBilanUEMOA($exercice);
             $numer = DB::connection('sensyyg2_umeoabd')
                 ->table('lignebilan')
                 ->selectRaw('SUM(brut) as total ')
@@ -895,17 +1046,12 @@ class GetRatiosHelpers
         return round(($numer->total / $denom->total)*100,2);
         }
     /*
-     * ROE : Return On Equity : Rentabilité des capitaus propres ou Coeficient de rentabilité
+     * ROE : Return On Equity : Rentabilité des capitaux propres ou Coeficient de rentabilité
      *
      *                  Resultat net / Fonds Propres
      */
     public static function roe($entreprise, $exercice,$bd){
-        $denom = DB::connection($bd)->table("lignebilan")
-            ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[34,35,36,37,38,39,40,41,42])
-            ->where('idEntreprise',$entreprise)
-            ->where('exercice',$exercice)
-            ->first();
+        $denom = GetRatiosHelpers::fondPropre($entreprise,$exercice,$bd);
 
         $numer = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
@@ -920,11 +1066,7 @@ class GetRatiosHelpers
         return round(($numer->total / $denom->total)*100,2);
     }
     public static function roePays($exercice,$bd){
-        $denom = DB::connection($bd)->table("lignebilan")
-            ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[34,35,36,37,38,39,40,41,42])
-            ->where('exercice',$exercice)
-            ->first();
+        $denom = GetRatiosHelpers::fondProprePays($exercice,$bd);
 
         $numer = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total ')
@@ -938,11 +1080,7 @@ class GetRatiosHelpers
         return round(($numer->total / $denom->total)*100,2);
     }
     public static function roeUEMOA($exercice){
-        $denom = DB::connection('sensyyg2_umeoabd')->table("lignebilan")
-            ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[34,35,36,37,38,39,40,41,42])
-            ->where('exercice',$exercice)
-            ->first();
+        $denom = GetRatiosHelpers::fondPropreUEMOA($exercice);
 
         $numer = DB::connection('sensyyg2_umeoabd')
             ->table('lignebilan')
