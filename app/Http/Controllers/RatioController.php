@@ -90,6 +90,14 @@ class RatioController extends Controller
             $view = view('pages.ratios.ccr');
         elseif($request->ratio == 'Ratio 1')
             $view = view('pages.ratios.cc');
+        elseif($request->ratio == 'DIVIDENDE')
+            $view = view('pages.ratios.dividende');
+        elseif($request->ratio == 'Ratio d’Indépendance Financière (Ratio de Couverture de Risque)')
+            $view = view('pages.ratios.rif');
+        elseif($request->ratio == 'Ratio de Distribution de Crédit')
+            $view = view('pages.ratios.rdc');
+        elseif($request->ratio == 'Ratio de Collect de Depot')
+            $view = view('pages.ratios.rcd');
         
         else
            return $view = view('pages.ratios.404');
