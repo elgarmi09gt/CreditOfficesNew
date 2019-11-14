@@ -98,6 +98,12 @@ class RatioController extends Controller
             $view = view('pages.ratios.rdc');
         elseif($request->ratio == 'Ratio de Collect de Depot')
             $view = view('pages.ratios.rcd');
+        elseif($request->ratio == 'Ratio de la situation clientèle')
+            $view = view('pages.ratios.rsc');
+        elseif($request->ratio == 'Ratio de production')
+            $view = view('pages.ratios.rp');
+        elseif($request->ratio == 'Ratio de productivité générale')
+            $view = view('pages.ratios.rpg');
         
         else
            return $view = view('pages.ratios.404');
@@ -218,6 +224,7 @@ class RatioController extends Controller
             ->with('RESULTATS', $RESULTATS)
             ->with('inputs', $input)
             ->with('supclasses', $supclasses)
+            ->with('dbs', $dbs)
             ->with('infoEntreprises', $infoEntreprises);
     }
 }

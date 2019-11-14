@@ -16,7 +16,7 @@
 	@foreach($exercices as $exercice)
 		@php($D[0][0] = $exercice->exercice)
 		@php($D[0][1] = substr($Res[0], 4))
-		@php($D[0][2] = $$fp($exercice->exercice))
+		@php($D[0][2] = $$fp($exercice->exercice,$dbs))
 		@php($D[0][3] = $$fu($exercice->exercice))
 
 		@php($DATA = $DATA->concat($D))
@@ -128,7 +128,7 @@
 							@php($f=$r[1])
 							@php($fp=$r[1].'Pays')
 							@php($fu=$r[1].'UEMOA')
-			            	<th> {{ $bsup =  $$f($idE,$exercice->exercice) }} </th>
+			            	<th> {{ $bsup =  $$f($idE,$exercice->exercice,$dbs) }} </th>
 			            	<th> {{ $bsupp = $data[2] }}</th>
 				            <th> {{ $bsupp  != 0 ? ((($sss = round(($bsup/$bsupp)*100,2)) >= 0 ? $sss : (-1)*$sss)) : 0}} </th>
 				            <th> {{ $bsupu = $data[3] }} </th>
@@ -136,8 +136,8 @@
 				            <th> {{ $bsupu != 0 ? ((($sss = round(($bsupp/$bsupu)*100,2)) >= 0 ? $sss : (-1)*$sss)) : 0}} </th>
 				            @if($inputs['naturep'] == 'paran')
 				            	@if ($loop->parent->first)
-				            		@php($bsupP = $$f($idE,$exercice->exercice-1))
-				            		@php($bsuppP = $$fp($exercice->exercice-1))
+				            		@php($bsupP = $$f($idE,$exercice->exercice-1,$dbs))
+				            		@php($bsuppP = $$fp($exercice->exercice-1,$dbs))
 				            		@php($bsupuP = $$fu($exercice->exercice-1))
 				            	@endif
 				            	<th style="color: {{ ($diff = ($bsup - $bsupP)) < 0 ? 'red' : ($diff > 0 ? 'green' : '')}}">{{ $diff  }}</th>
@@ -156,9 +156,9 @@
 				        @php($bsupuP = $bsupu)
 		        	@endforeach
 		        	@if($inputs['naturep'] != 'paran')
-		        		<th style="color: {{ ($diff = ($$f($idE,$exercice2) - ($b1 = $$f($idE,$exercice1)))) < 0 ? 'red' : ($diff > 0 ? 'green' : '')}}"> {{ (int) $diff }} </th>
+		        		<th style="color: {{ ($diff = ($$f($idE,$exercice2,$dbs) - ($b1 = $$f($idE,$exercice1,$dbs)))) < 0 ? 'red' : ($diff > 0 ? 'green' : '')}}"> {{ (int) $diff }} </th>
 		            	<th> {{ $b1 != 0 ? ((($sss = round(($diff/$b1)*100,2)) >= 0 ? $sss : (-1)*$sss)): 0 }} </th>
-		            	<th style="color: {{ ($diffP = ($$fp($exercice2) - ($bp1 = $$fp($exercice1)))) < 0 ? 'red' : ($diffP > 0 ? 'green' : '')}}"> {{ (int) $diffP }} </th>
+		            	<th style="color: {{ ($diffP = ($$fp($exercice2,$dbs) - ($bp1 = $$fp($exercice1,$dbs)))) < 0 ? 'red' : ($diffP > 0 ? 'green' : '')}}"> {{ (int) $diffP }} </th>
 		            	<th> {{ $bp1 != 0 ? ((($sss = round(($diffP/$bp1)*100,2)) >= 0 ? $sss : (-1)*$sss)): 0 }} </th> 
 
 		            	<th style="color: {{ ($diffU = ($$fu($exercice2) - ($bu1 = $$fu($exercice1)))) < 0 ? 'red' : ($diffU > 0 ? 'green' : '')}}"> {{ $diffU }} </th>

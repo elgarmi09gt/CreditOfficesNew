@@ -14,6 +14,142 @@ class GetRatiosHelpers
     public static function FormatRatio(){
 
     }
+    /*
+    *   Ratio de la situation clientèle
+    */
+    public static function rsc($entreprise,$exercice,$bd){
+        $op2 = GetRatiosHelpers::Operation_clientel_passif($entreprise,$exercice,$bd);
+        $op1 = GetRatiosHelpers::Operation_clientel_actif($entreprise,$exercice,$bd);
+        if (!$op1 || !$op2 || $op2->total == 0) {
+            return 0;
+        }
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rscPays($exercice,$bd){
+        $op2 = GetRatiosHelpers::Operation_clientel_passifPays($exercice,$bd);
+        $op1 = GetRatiosHelpers::Operation_clientel_actifPays($exercice,$bd);
+        if (!$op1 || !$op2 || $op2->total == 0) {
+            return 0;
+        }
+        return round(($op1->total / $op2->total)*100,2);
+        
+    }
+    public static function rscUEMOA($exercice){
+        $op2 = GetRatiosHelpers::Operation_clientel_passifUEMOA($exercice);
+        $op1 = GetRatiosHelpers::Operation_clientel_actifUEMOA($exercice);
+        if (!$op1 || !$op2 || $op2->total == 0) {
+            return 0;
+        }
+        return round(($op1->total / $op2->total)*100,2);
+        
+    }
+    /*
+    *   Le ratio du type de crédits distribués
+    */
+    public static function rtcd1($entreprise,$exercice,$bd){
+
+    }
+    public static function rtcd1Pays($exercice,$bd){
+        
+    }
+    public static function rtcd1UEMOA($exercice){
+        
+    }
+    public static function rtcd2($entreprise,$exercice,$bd){
+
+    }
+    public static function rtcd2Pays($exercice,$bd){
+        
+    }
+    public static function rtcd2UEMOA($exercice){
+        
+    }
+    public static function rtcd3($entreprise,$exercice,$bd){
+
+    }
+    public static function rtcd3Pays($exercice,$bd){
+        
+    }
+    public static function rtcd3UEMOA($exercice){
+        
+    }
+    /*
+    *   Les ratios de type de dépôts collectés
+    */
+    public static function rtdc1($entreprise,$exercice,$bd){
+
+    }
+    public static function rtdc1Pays($exercice,$bd){
+        
+    }
+    public static function rtdc1UEMOA($exercice){
+        
+    }
+    public static function rtdc2($entreprise,$exercice,$bd){
+
+    }
+    public static function rtdc2Pays($exercice,$bd){
+        
+    }
+    public static function rtdc2UEMOA($exercice){
+        
+    }
+    /*
+    *   Le ratio de production
+    */
+    public static function rp($entreprise,$exercice,$bd){
+        $op = GetRatiosHelpers::totalBilan($entreprise,$exercice,$bd);
+        if (!$op || $op->total == 0 ) {
+            return 0;
+        }
+        return round((GetRatiosHelpers::pnb($entreprise,$exercice,$bd) / $op->total)*100,2);
+        
+    }
+    public static function rpPays($exercice,$bd){
+        $op = GetRatiosHelpers::totalBilanPays($exercice,$bd);
+        if (!$op || $op->total == 0 ) {
+            return 0;
+        }
+        return round((GetRatiosHelpers::pnbPays($exercice,$bd) / $op->total)*100,2);
+        
+    }
+    public static function rpUEMOA($exercice){
+        $op = GetRatiosHelpers::totalBilanUEMOA($exercice);
+        if (!$op || $op->total == 0 ) {
+            return 0;
+        }
+        return round((GetRatiosHelpers::pnbUEMOA($exercice) / $op->total)*100,2);
+        
+    }
+    /*
+    *   Le ratio de productivité générale
+    */
+    public static function rpg($entreprise,$exercice,$bd){
+        $op = GetRatiosHelpers::pnb($entreprise,$exercice,$bd);
+        if ($op == 0) {
+            return 0;
+        }
+        return round((GetRatiosHelpers::fg($entreprise,$exercice,$bd) / $op)*100,2);
+
+    }
+    public static function rpgPays($exercice,$bd){
+        
+    }
+    public static function rpgUEMOA($exercice){
+        
+    }
+    /*
+    *   Le ratio de marge nette
+    */
+    public static function rmn($entreprise,$exercice,$bd){
+
+    }
+    public static function rmnPays($exercice,$bd){
+        
+    }
+    public static function rmnUEMOA($exercice){
+        
+    }
     // Ratio de dstribution de credit
     public static function rdc($entreprise,$exercice,$bd){
         $op1 = GetRatiosHelpers::Operation_clientel_actif($entreprise,$exercice,$bd);
@@ -68,7 +204,7 @@ class GetRatiosHelpers
         if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
             return 0.0;
         endif;
-        return round(($op1->total / $op2->total)*100,2);
+        return round(($op1->total / $op2->toatl)*100,2);
     }
 
     // Ration d'independance financiere ou De couverture de risque
@@ -76,7 +212,7 @@ class GetRatiosHelpers
         $op1 = GetRatiosHelpers::fondPropre($entreprise,$exercice,$bd);
         $op2 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[20,21,22,23,24,25,26,27,28])
+            ->whereIn('idRubrique',[22,24,27,28,31,32])
             ->where('idEntreprise',$entreprise)
             ->where('exercice',$exercice)
             ->first();
@@ -84,33 +220,33 @@ class GetRatiosHelpers
         if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
             return 0.0;
         endif;
-        return round(($op1->total / $op2->total)*100,2);
+        return round(($op1->total / ($op1->total + $op2->total))*100,2);
     }
     public static function rifPays($exercice,$bd){
         $op1 = GetRatiosHelpers::fondProprePays($exercice,$bd);
         $op2 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[20,21,22,23,24,25,26,27,28])
+            ->whereIn('idRubrique',[22,24,27,28,31,32])
             ->where('exercice',$exercice)
             ->first();
 
         if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
             return 0.0;
         endif;
-        return round(($op1->total / $op2->total)*100,2);
+        return round(($op1->total / ($op1->total + $op2->total))*100,2);
     }
     public static function rifUEMOA($exercice){
         $op1 = GetRatiosHelpers::fondPropreUEMOA($exercice);
         $op2 = DB::connection('sensyyg2_umeoabd')->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[20,21,22,23,24,25,26,27,28])
+            ->whereIn('idRubrique',[22,24,27,28,31,32])
             ->where('exercice',$exercice)
             ->first();
 
         if (!$op1 || !$op2 || $op1->total == 0 || $op2->total == 0):
             return 0.0;
         endif;
-        return round(($op1->total / $op2->total)*100,2);
+        return round(($op1->total / ($op1->total + $op2->total))*100,2);
     }
     /* Dividende*/
     public static function dividende($entreprise, $exercice){
@@ -170,8 +306,8 @@ class GetRatiosHelpers
     }
 
     /* 1. Produit Bancaire */
-    public static function pb($entreprise, $exercice){
-        $pb = DB::table('lignebilan')
+    public static function pb($entreprise, $exercice,$bd){
+        $pb = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[65,66,67,68,69,70,71,72,73,74,75,87])
             ->where('idEntreprise',$entreprise)
@@ -181,8 +317,8 @@ class GetRatiosHelpers
         if (!$pb): $pb = 0 ; else: $pb = (int)$pb->total; endif;
         return $pb;
     }
-    public static function pbPays($exercice){
-        $pb = DB::table('lignebilan')
+    public static function pbPays($exercice,$bd){
+        $pb = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[65,66,67,68,69,70,71,72,73,74,75,87])
             ->where('exercice',$exercice)
@@ -203,8 +339,8 @@ class GetRatiosHelpers
         return $pb;
     }
     /* 2. Charge Bancaire */
-    public static function cb($entreprise, $exercice){
-        $cb = DB::table('lignebilan')
+    public static function cb($entreprise, $exercice,$bd){
+        $cb = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[43,44,45,46,47,48,49,50,51,52,86])
                 ->where('idEntreprise',$entreprise)
@@ -214,8 +350,8 @@ class GetRatiosHelpers
         return $cb;
 
     }
-    public static function cbPays($exercice){
-        $cb = DB::table('lignebilan')
+    public static function cbPays($exercice,$bd){
+        $cb = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[43,44,45,46,47,48,49,50,51,52,86])
                 ->where('exercice',$exercice)
@@ -236,28 +372,30 @@ class GetRatiosHelpers
 
     }
     /* 3. Produit Net Bancaire (1-2) */
-    public static function pnb($entreprise, $exercice){
+    public static function pnb($entreprise, $exercice,$bd){
     
-        return (GetRatiosHelpers::pb($entreprise, $exercice) - GetRatiosHelpers::cb($entreprise, $exercice));
+        return (GetRatiosHelpers::pb($entreprise, $exercice,$bd) - GetRatiosHelpers::cb($entreprise, $exercice,$bd));
     }
-    public static function pnbPays($exercice){
+    public static function pnbPays($exercice,$bd){
     
-        return (GetRatiosHelpers::pbPays($exercice) - GetRatiosHelpers::cbPays($exercice));
+        return (GetRatiosHelpers::pbPays($exercice,$bd) - GetRatiosHelpers::cbPays($exercice,$bd));
     }
     public static function pnbUEMOA($exercice){
     
         return (GetRatiosHelpers::pbUEMOA($exercice) - GetRatiosHelpers::cbUEMOA($exercice));
     }
     /* 4. Produits Accessoires Net */
-    public static function pan($entreprise, $exercice){
-        $op1 = DB::table('lignebilan')
+    public static function pan($entreprise, $exercice,$bd){
+        $op1 = DB::connection($bd)
+            ->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[76,77,78,79])
             ->where('idEntreprise',$entreprise)
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)
+                ->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[53,54,55])
                 ->where('idEntreprise',$entreprise)
@@ -268,14 +406,16 @@ class GetRatiosHelpers
 
         return ($op1 - $op2);
     }
-    public static function panPays($exercice){
-        $op1 = DB::table('lignebilan')
-            ->selectRaw('SUM(brut) as total')
-            ->whereIn('idRubrique',[76,77,78,79])
-            ->where('exercice',$exercice)
-            ->first();
+    public static function panPays($exercice,$bd){
+        $op1 = DB::connection($bd)
+                ->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[76,77,78,79])
+                ->where('exercice',$exercice)
+                ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)
+                ->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[53,54,55])
                 ->where('exercice',$exercice)
@@ -305,21 +445,22 @@ class GetRatiosHelpers
         return ($op1 - $op2);
     }
     /* 5. Produit Global D'exploitation (3+4) */
-    public static function pge($entreprise, $exercice){
+    public static function pge($entreprise, $exercice,$bd){
     
-        return (GetRatiosHelpers::pan($entreprise, $exercice)+ GetRatiosHelpers::pnb($entreprise, $exercice));
+        return (GetRatiosHelpers::pan($entreprise, $exercice,$bd)+ GetRatiosHelpers::pnb($entreprise, $exercice,$bd));
     }
-    public static function pgePays($exercice){
+    public static function pgePays($exercice,$bd){
     
-        return (GetRatiosHelpers::panPays($exercice)+ GetRatiosHelpers::pnbPays($exercice));
+        return (GetRatiosHelpers::panPays($exercice,$bd)+ GetRatiosHelpers::pnbPays($exercice,$bd));
     }
     public static function pgeUEMOA($exercice){
     
         return (GetRatiosHelpers::panUEMOA($exercice)+ GetRatiosHelpers::pnbUEMOA($exercice));
     }
     /* 6. Frais Generaux */
-    public static function fg($entreprise, $exercice){
-        $fg = DB::table('lignebilan')
+    public static function fg($entreprise, $exercice,$bd){
+        $fg = DB::connection($bd)
+            ->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[56,57])
             ->where('idEntreprise',$entreprise)
@@ -329,8 +470,9 @@ class GetRatiosHelpers
         if (!$fg): $fg = 0 ; else: $fg = (int)$fg->total; endif;
         return $fg;
     }
-   public static function fgPays($exercice){
-        $fg = DB::table('lignebilan')
+   public static function fgPays($exercice,$bd){
+        $fg = DB::connection($bd)
+            ->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[56,57])
             ->where('exercice',$exercice)
@@ -351,8 +493,8 @@ class GetRatiosHelpers
         return $fg;
     }
     /* 7. Amortissement et Provision Net Sur Immobilisation */
-    public static function api($entreprise, $exercice){
-        $api = DB::table('lignebilan')
+    public static function api($entreprise, $exercice,$bd){
+        $api = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[58,80])
             ->where('idEntreprise',$entreprise)
@@ -362,8 +504,8 @@ class GetRatiosHelpers
         if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
         return $api;
     }
-    public static function apiPays($exercice){
-        $api = DB::table('lignebilan')
+    public static function apiPays($exercice,$bd){
+        $api = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[58,80])
             ->where('exercice',$exercice)
@@ -384,25 +526,25 @@ class GetRatiosHelpers
         return $api;
     }
     /* 8. Resultat Brut D'exploitation apres amortissement */
-    public static function rbeaamor($entreprise, $exercice){
-        return (GetRatiosHelpers::pge($entreprise, $exercice)- GetRatiosHelpers::fg($entreprise, $exercice)- GetRatiosHelpers::api($entreprise, $exercice));
+    public static function rbeaamor($entreprise, $exercice,$bd){
+        return (GetRatiosHelpers::pge($entreprise, $exercice,$bd)- GetRatiosHelpers::fg($entreprise, $exercice,$bd)- GetRatiosHelpers::api($entreprise, $exercice,$bd));
     }
-    public static function rbeaamorPays($exercice){
-        return (GetRatiosHelpers::pgePays($exercice)- GetRatiosHelpers::fgPays($exercice)- GetRatiosHelpers::apiPays($exercice));
+    public static function rbeaamorPays($exercice,$bd){
+        return (GetRatiosHelpers::pgePays($exercice,$bd)- GetRatiosHelpers::fgPays($exercice,$bd)- GetRatiosHelpers::apiPays($exercice,$bd));
     }
     public static function rbeaamorUEMOA($exercice){
         return (GetRatiosHelpers::pgeUEMOA($exercice)- GetRatiosHelpers::fgUEMOA($exercice)- GetRatiosHelpers::apiUEMOA($exercice));
     }
     /* 9. Provision Net Sur Risque */
-    public static function pnr($entreprise, $exercice){
-        $op1 = DB::table('lignebilan')
+    public static function pnr($entreprise, $exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[81,82])
             ->where('idEntreprise',$entreprise)
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[59,60])
                 ->where('idEntreprise',$entreprise)
@@ -413,14 +555,14 @@ class GetRatiosHelpers
 
         return ($op2 - $op1);
     }
-    public static function pnrPays($exercice){
-        $op1 = DB::table('lignebilan')
+    public static function pnrPays($exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[81,82])
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[59,60])
                 ->where('exercice',$exercice)
@@ -450,35 +592,35 @@ class GetRatiosHelpers
         return ($op2 - $op1);
     }
     /* 10. Interet sur creance douteuse */
-    public static function icdl($entreprise, $exercice){
+    public static function icdl($entreprise, $exercice,$bd){
         return '0';
     }
-    public static function icdlPays($exercice){
+    public static function icdlPays($exercice,$bd){
         return '0';
     }
     public static function icdlUEMOA($exercice){
         return '0';
     }
     /* 11. Resultat D'exploitation (8-9+10) */
-    public static function re($entreprise, $exercice){
-        return (GetRatiosHelpers::rbeaamor($entreprise, $exercice)- GetRatiosHelpers::pnr($entreprise, $exercice));
+    public static function re($entreprise, $exercice,$bd){
+        return (GetRatiosHelpers::rbeaamor($entreprise, $exercice,$bd)- GetRatiosHelpers::pnr($entreprise, $exercice,$bd));
     }
-    public static function rePays($exercice){
-        return (GetRatiosHelpers::rbeaamorPays($exercice)- GetRatiosHelpers::pnrPays($exercice));
+    public static function rePays($exercice,$bd){
+        return (GetRatiosHelpers::rbeaamorPays($exercice,$bd)- GetRatiosHelpers::pnrPays($exercice,$bd));
     }
     public static function reUEMOA($exercice){
         return (GetRatiosHelpers::rbeaamorUEMOA($exercice)- GetRatiosHelpers::pnrUEMOA($exercice));
     }
     /* 12. Resultat Exceptionel Net */
-    public static function ren($entreprise,$exercice){
-        $op1 = DB::table('lignebilan')
+    public static function ren($entreprise,$exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[83])
             ->where('idEntreprise',$entreprise)
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[61])
                 ->where('idEntreprise',$entreprise)
@@ -489,14 +631,14 @@ class GetRatiosHelpers
 
         return ($op1 - $op2);
     }
-    public static function renPays($exercice){
-        $op1 = DB::table('lignebilan')
+    public static function renPays($exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[83])
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[61])
                 ->where('exercice',$exercice)
@@ -526,15 +668,15 @@ class GetRatiosHelpers
         return ($op1 - $op2);
     }
     /* 13. Resultat sur exercice Anterieur */
-    public static function rea($entreprise,$exercice){
-        $op1 = DB::table('lignebilan')
+    public static function rea($entreprise,$exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[84])
             ->where('idEntreprise',$entreprise)
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[62])
                 ->where('idEntreprise',$entreprise)
@@ -545,14 +687,14 @@ class GetRatiosHelpers
 
         return ($op1 - $op2);
     }
-    public static function reaPays($exercice){
-        $op1 = DB::table('lignebilan')
+    public static function reaPays($exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->whereIn('idRubrique',[84])
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[62])
                 ->where('exercice',$exercice)
@@ -582,8 +724,8 @@ class GetRatiosHelpers
         return ($op1 - $op2);
     }
     /* 14. Impot sur le benefice */
-    public static function ib($entreprise, $exercice){
-        $api = DB::table('lignebilan')
+    public static function ib($entreprise, $exercice,$bd){
+        $api = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->where('idRubrique',63)
             ->where('idEntreprise',$entreprise)
@@ -593,8 +735,8 @@ class GetRatiosHelpers
         if (!$api): $api = 0 ; else: $api = (int)$api->total; endif;
         return $api;
     }
-     public static function ibPays($exercice){
-        $api = DB::table('lignebilan')
+     public static function ibPays($exercice,$bd){
+        $api = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->where('idRubrique',63)
             ->where('exercice',$exercice)
@@ -615,15 +757,15 @@ class GetRatiosHelpers
         return $api;
     }
     /* 15. Resultat net */
-    public static function res($entreprise, $exercice){
-        $op1 = DB::table('lignebilan')
+    public static function res($entreprise, $exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->where('idRubrique',64)
             ->where('idEntreprise',$entreprise)
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->where('idRubrique',85)
                 ->where('idEntreprise',$entreprise)
@@ -634,14 +776,14 @@ class GetRatiosHelpers
 
         return ($op1 - $op2);
     }
-    public static function resPays($exercice){
-        $op1 = DB::table('lignebilan')
+    public static function resPays($exercice,$bd){
+        $op1 = DB::connection($bd)->table('lignebilan')
             ->selectRaw('SUM(brut) as total')
             ->where('idRubrique',64)
             ->where('exercice',$exercice)
             ->first();
 
-        $op2 = DB::table('lignebilan')
+        $op2 = DB::connection($bd)->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->where('idRubrique',85)
                 ->where('exercice',$exercice)
