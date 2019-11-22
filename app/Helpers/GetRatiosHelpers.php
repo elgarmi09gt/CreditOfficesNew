@@ -44,6 +44,35 @@ class GetRatiosHelpers
         
     }
     /*
+    *   Ratio de la situation de la trésorerie
+    */
+    public static function rst($entreprise,$exercice,$bd){
+        $op2 = GetRatiosHelpers::Operation_tresorerie_passif($entreprise,$exercice,$bd);
+        $op1 = GetRatiosHelpers::Operation_tresorerie_actif($entreprise,$exercice,$bd);
+        if (!$op1 || !$op2 || $op2->total == 0) {
+            return 0;
+        }
+        return round(($op1->total / $op2->total)*100,2);
+    }
+    public static function rstPays($exercice,$bd){
+        $op2 = GetRatiosHelpers::Operation_tresorerie_passifPays($exercice,$bd);
+        $op1 = GetRatiosHelpers::Operation_tresorerie_actifPays($exercice,$bd);
+        if (!$op1 || !$op2 || $op2->total == 0) {
+            return 0;
+        }
+        return round(($op1->total / $op2->total)*100,2);
+        
+    }
+    public static function rstUEMOA($exercice){
+        $op2 = GetRatiosHelpers::Operation_tresorerie_passifUEMOA($exercice);
+        $op1 = GetRatiosHelpers::Operation_tresorerie_actifUEMOA($exercice);
+        if (!$op1 || !$op2 || $op2->total == 0) {
+            return 0;
+        }
+        return round(($op1->total / $op2->total)*100,2);
+        
+    }
+    /*
     *   Le ratio du type de crédits distribués
     */
     public static function rtcd1($entreprise,$exercice,$bd){
@@ -122,7 +151,7 @@ class GetRatiosHelpers
         
     }
     /*
-    *   Le ratio de productivité générale
+    *   Le ratio de productivité générale : Produit Net Bancaire / Friax Généraux
     */
     public static function rpg($entreprise,$exercice,$bd){
         $op = GetRatiosHelpers::pnb($entreprise,$exercice,$bd);
@@ -133,10 +162,20 @@ class GetRatiosHelpers
 
     }
     public static function rpgPays($exercice,$bd){
-        
+        $op = GetRatiosHelpers::pnbPays($exercice,$bd);
+        if ($op == 0) {
+            return 0;
+        }
+        return round((GetRatiosHelpers::fgPays($exercice,$bd) / $op)*100,2);
+
     }
     public static function rpgUEMOA($exercice){
-        
+        $op = GetRatiosHelpers::pnbUEMOA($exercice);
+        if ($op == 0) {
+            return 0;
+        }
+        return round((GetRatiosHelpers::fgUEMOA($exercice) / $op)*100,2);
+
     }
     /*
     *   Le ratio de marge nette
@@ -1019,6 +1058,53 @@ class GetRatiosHelpers
         return DB::connection('sensyyg2_umeoabd')->table('lignebilan')
                 ->selectRaw('SUM(brut) as total')
                 ->whereIn('idRubrique',[23,24,25,26,27])
+                ->where('exercice',$exercice)
+                ->first();
+        
+    }
+    // Operetion clientel Actif
+    public static function Operation_tresorerie_actif($entreprise,$exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[2,3,4,5])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_tresorerie_actifPays($exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[2,3,4,5])
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_tresorerie_actifUEMOA($exercice){
+        return DB::connection('sensyyg2_umeoabd')->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[2,3,4,5])
+                ->where('exercice',$exercice)
+                ->first();
+    }
+    // Operation clientel Passif
+    public static function Operation_tresorerie_passif($entreprise,$exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[20,21,22])
+                ->where('idEntreprise',$entreprise)
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_tresorerie_passifPays($exercice,$bd){
+        return DB::connection($bd)->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[20,21,22])
+                ->where('exercice',$exercice)
+                ->first();
+    }
+     public static function Operation_tresorerie_passifUEMOA($exercice){
+        return DB::connection('sensyyg2_umeoabd')->table('lignebilan')
+                ->selectRaw('SUM(brut) as total')
+                ->whereIn('idRubrique',[20,21,22])
                 ->where('exercice',$exercice)
                 ->first();
         

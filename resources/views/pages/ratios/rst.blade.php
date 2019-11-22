@@ -11,14 +11,14 @@
 @php($RATIO_U = collect())
 @php($RATIO_V = collect())
 @php($RATIOS = collect())
-@foreach($Countries as $countrie) {{-- For Any Country Calculate rpg for either Year --}}
+@foreach($Countries as $countrie) {{-- For Any Country Calculate rst for either Year --}}
     @foreach($exercices as $exercice)
         @php($RATIO[0][0] = $countrie->idPays)
         @php($RATIO[0][1] = $exercice->exercice)
-        @php($ps = ($RATIO[0][2] = $rpgPays($exercice->exercice,$countrie->bdPays)))
+        @php($ps = ($RATIO[0][2] = $rstPays($exercice->exercice,$countrie->bdPays)))
         @if($input['naturep'] =='paran') {{-- Evolution if By Year--}}
             @if ($loop->first)
-                @php($pp = $rpgPays($exercice->exercice-1,$countrie->bdPays))
+                @php($pp = $rstPays($exercice->exercice-1,$countrie->bdPays))
             @endif
             @php($RATIO[0][3] = $ps - $pp)
         @endif
@@ -27,16 +27,16 @@
     @endforeach
     @if($input['naturep'] != 'paran')
         @php($RV[0][0] = $countrie->idPays)
-        @php($RV[0][1] = $rpgPays($exercice2,$countrie->bdPays) - $rpgPays($exercice1,$countrie->bdPays))
+        @php($RV[0][1] = $rstPays($exercice2,$countrie->bdPays) - $rstPays($exercice1,$countrie->bdPays))
         @php($RATIO_V = $RATIO_V->concat($RV))
     @endif
 @endforeach
-@foreach($exercices as $exercice) {{-- Calculate rpg For UEMOA for etheir YEAR --}}
+@foreach($exercices as $exercice) {{-- Calculate rst For UEMOA for etheir YEAR --}}
     @php ($RU[0][0] = ($exercice->exercice))
-    @php ($ps = ($RU[0][1] = $rpgUEMOA($exercice->exercice)))
+    @php ($ps = ($RU[0][1] = $rstUEMOA($exercice->exercice)))
     @if($input['naturep'] == 'paran') {{-- UEMOA Evolution If By YEAR --}}
         @if($loop->first)
-            @php($pp = $rpgUEMOA($exercice->exercice-1))
+            @php($pp = $rstUEMOA($exercice->exercice-1))
             @php($RU[0][2] = $ps - $pp)
         @endif
     @endif
@@ -45,7 +45,7 @@
 @endforeach
 
 @if($input['naturep'] != 'paran')
-    @php($RATIO_VU [] = ($rpgUEMOA($exercice2) - $rpgUEMOA($exercice1)))
+    @php($RATIO_VU [] = ($rstUEMOA($exercice2) - $rstUEMOA($exercice1)))
 @endif
 <table class="table table-condensed container" style="font-size: 12px">
     @foreach($Countries as $countrie)
@@ -81,8 +81,8 @@
             @endforeach
             @if($input['naturep'] != "paran")
                 <th colspan="4" style="text-align: center;background-color: #8ec5fc;">
-                    <div class="col">{{ 'Pays : '. ($rpgPays($exercice2,$countrie->bdPays) - $rpgPays($exercice1,$countrie->bdPays))}}</div>
-                    <div class="col">{{ 'UEMOA : '. ($rpgUEMOA($exercice2) - $rpgUEMOA($exercice1))}}</div>
+                    <div class="col">{{ 'Pays : '. ($rstPays($exercice2,$countrie->bdPays) - $rstPays($exercice1,$countrie->bdPays))}}</div>
+                    <div class="col">{{ 'UEMOA : '. ($rstUEMOA($exercice2) - $rstUEMOA($exercice1))}}</div>
                 </th>
             @endif
         </tr>
@@ -131,13 +131,13 @@
                 <th> {{ $exercices->count() > 2 ? $entreprise->Sigle : $entreprise->nomEntreprise}}</th>
                 @foreach($exercices as $exercice)
                     @if($loop->first && $input['naturep'] == "paran")
-                        @php($ep = $rpg($entreprise->idEntreprise,$exercice->exercice - 1,$countrie->bdPays))
+                        @php($ep = $rst($entreprise->idEntreprise,$exercice->exercice - 1,$countrie->bdPays))
                     @endif
                     @foreach($RATIOS as $r)
                         @continue($r[0] != $countrie->idPays || $r[1] != $exercice->exercice)
                         @foreach($RATIO_U as $ru)
                             @continue($ru[0] != $r[1])
-                            <th style="background-color: #e2ebf0">{{ $e = $rpg($entreprise->idEntreprise,$exercice->exercice,$countrie->bdPays) }}</th>
+                            <th style="background-color: #e2ebf0">{{ $e = $rst($entreprise->idEntreprise,$exercice->exercice,$countrie->bdPays) }}</th>
                             <th style="background-color: #c2e9fb">
                                 {{ $pp = ($r[2] != 0 ? ($e/$r[2] >= 0 ? round(($e/$r[2])*100,2) :(-1*round(($e/$r[2])*100,2)) ) : 0 )}}
                             </th>
@@ -157,7 +157,7 @@
                 @if($input['naturep'] != "paran")
                     @foreach($RATIO_V as $rv)
                         @continue($rv[0] != $countrie->idPays)
-                        @php($diff = ($rpg($entreprise->idEntreprise,$exercice2,$countrie->bdPays) - ($ep = $rpg($entreprise->idEntreprise,$exercice1,$countrie->bdPays))))
+                        @php($diff = ($rst($entreprise->idEntreprise,$exercice2,$countrie->bdPays) - ($ep = $rst($entreprise->idEntreprise,$exercice1,$countrie->bdPays))))
                         <th style="color: {{ $diff < 0 ? 'red' : ($diff > 0 ? 'green':'black')}}">{{ round($diff,2)}}</th>
                         <th>{{  $ep != 0 ? ($diff / $ep > 0 ? (round(($diff / $ep)*100,2)) : (-1 * round(($diff / $ep)*100,2))) : 0 }}</th>
                         <th>{{ $rv[1] != 0 ? ($diff / $rv[1] > 0 ? (round(($diff / $rv[1])*100,2)) : (-1 * round(($diff / $rv[1])*100,2))) : 0 }}</th>

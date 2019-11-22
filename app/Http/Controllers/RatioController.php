@@ -79,10 +79,13 @@ class RatioController extends Controller
                 ->get('exercice');
         endif;
         if ($request->ratio == "COEFFICIENT DE RENTABILITE")
+            // rapport du résultat net aux fonds propres (capital, réserves et éléments assimilés, report à nouveau), autrement appelé return on equity (ROE).
             $view = view('pages.ratios.roe');
         elseif ($request->ratio == 'RENTABILITÉ DES ACTIFS')
+            // rapport du résultat net au total du bilan, autrement appelé return on assets (ROA)
             $view = view('pages.ratios.roa');
         elseif ($request->ratio == 'FONDS PROPRES')
+            
             $view = view('pages.ratios.fp');
         elseif($request->ratio == 'COÛT DES COMPTES CRÉDITEURS')
             $view = view('pages.ratios.ccc');
@@ -104,6 +107,8 @@ class RatioController extends Controller
             $view = view('pages.ratios.rp');
         elseif($request->ratio == 'Ratio de productivité générale')
             $view = view('pages.ratios.rpg');
+        elseif($request->ratio == 'Ratio de la situation de la trésorerie')
+            $view = view('pages.ratios.rst');
         
         else
            return $view = view('pages.ratios.404');
