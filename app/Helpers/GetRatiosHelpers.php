@@ -76,7 +76,7 @@ class GetRatiosHelpers
     *   Le ratio du type de crédits distribués
     */
     public static function rtcd1($entreprise,$exercice,$bd){
-
+        return 0;
     }
     public static function rtcd1Pays($exercice,$bd){
         
