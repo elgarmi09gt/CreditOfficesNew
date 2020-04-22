@@ -33,11 +33,16 @@ body
 }
 /*--------------- la tete du site ------------------*/
 
-.header {
-    height:35%;
+.header{
+	height:190px;
+	width:1260px;
+    background:url(../images/header.gif) no-repeat;
+}
+.header2 {
+    height:30%;
     width:100%;
     /*-- background:url(../images/header.png) repeat-x bottom; --*/
-    background:url(../images/header.gif) repeat-x bottom;
+    background:url(../images/header.gif) no-repeat;
     border:#000;
 
 }
@@ -52,7 +57,7 @@ body
 /*-----------------------Menue D�roulant---------*/
 
 #nav {
-    float:none;
+    float: right;
     width: 90%;
     height:35px;
     margin: 10% 5% 0;
@@ -85,7 +90,7 @@ body
 /* main level link */
 #nav a {
     font-weight: bold;
-    color: #ffffff;
+    color: #fff;
     text-decoration: none;
     display: block;
     padding:  5px 5px 5px 5px;
@@ -225,7 +230,7 @@ html[xmlns] #nav {
 .left_content{
     width:830px;
     float:left;
-//padding:10px 5px 10px 5px;
+/* padding:10px 5px 10px 5px; */
     background-color:#FFFFFF;
 }
 
@@ -240,7 +245,7 @@ html[xmlns] #nav {
 .right_content{
     width:400px;
     float:left;
-//padding:10px 5px 10px 5px;
+/* //padding:10px 5px 10px 5px; */
     background-color:#F0F8FF;
 }
 

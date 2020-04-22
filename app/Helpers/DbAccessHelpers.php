@@ -15,7 +15,7 @@ class DbAccessHelpers
             $idPays = $request['pays'];
         else
             $idPays = 201;
-        $db = DB::table('pays')->where('idPays', $idPays)->get('bdPays');
+        $db = DB::table('pays')->where('id', $idPays)->get('bdPays');
         foreach ($db as $d) {
             $db = $d->bdPays;
         }

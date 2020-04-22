@@ -5,35 +5,35 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int $idPays
- * @property int $idContinent
+ * @property integer $id
+ * @property string $codePays
+ * @property string $pays
  * @property string $ohada
  * @property string $cedeao
- * @property string $codesN
- * @property string $codes2
- * @property string $codes3
- * @property string $nomPays
- * @property string $bdpays
+ * @property string $bdPays
+ * @property string $created_at
+ * @property string $updated_at
+ * @property Entreprise[] $entreprises
  */
 class Pays extends Model
 {
     /**
-     * The primary key for the model.
+     * The "type" of the auto-incrementing ID.
      * 
      * @var string
      */
-    protected $primaryKey = 'idPays';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
+    protected $keyType = 'integer';
 
     /**
      * @var array
      */
-    protected $fillable = ['idContinent', 'ohada', 'cedeao', 'codesN', 'codes2', 'codes3', 'nomPays', 'bdpays'];
+    protected $fillable = ['codePays', 'pays', 'ohada', 'cedeao', 'bdPays', 'created_at', 'updated_at'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function entreprises()
+    {
+        return $this->hasMany('App\Models\Entreprise', 'idPays');
+    }
 }

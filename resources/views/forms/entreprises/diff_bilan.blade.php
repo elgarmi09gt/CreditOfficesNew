@@ -61,9 +61,7 @@
                         </strong>
                     </label>
                 </div>
-
                 <div class="col">
-
                     <label for="" style="font-size:medium;color: #0355AF;
                             font-weight: bold;font-family: 'Times New Roman, Times, serif'">
                         <strong>
@@ -71,7 +69,6 @@
                         </strong>
                     </label>
                 </div>
-
                 <div class="col">
                     <label for="" style="font-size:medium;color: #0355AF;
                             font-weight: bold;font-family: 'Times New Roman, Times'">
@@ -80,7 +77,6 @@
                         </strong>
                     </label>
                 </div>
-
             </div>
             <div class="form-group row">
                 <div class="col">
@@ -114,7 +110,6 @@
                     <label for=""><input type="radio" name="naturep" value="paran" checked> Par année</label>
                     <label for=""><input type="radio" name="naturep" value="variation"> Variation</label>
                 </div>
-
             </div>
             <div class="form-group row">
                 <div class="col">
@@ -125,7 +120,6 @@
                         </strong>
                     </label>
                 </div>
-
                 <div class="col">
                     <label for="" style="font-size: medium;color: #0355AF;
                             font-weight: bold;font-family: 'Times New Roman, Times, serif;'">
@@ -134,7 +128,6 @@
                         </strong>
                     </label>
                 </div>
-
                 <div class="col">
                     <label for="" style="font-size:medium;color: #0355AF;
                             font-weight: bold;font-family: 'Times New Roman, Times, serif;'">
@@ -149,7 +142,6 @@
                     <label for=""><input type="radio" name="document" value="bilan" checked>&nbsp; Bilan</label>
                     <label for=""><input type="radio" name="document" value="compres">&nbsp;Compte Resultat</label>
                 </div>
-
                 <div class="col" style="align-content: center">
                     <label for=""> Exercice 1
                         <select name="exercice1" class="form-control" style="font-family: 'Times New Roman, Times, serif';font-size: 17px;height: 8%">
@@ -183,4 +175,3 @@
 @section('content')
     <iframe src="" name="index" style="width: 100%; height: 900px; border-width: 0"></iframe>
 @stop
-

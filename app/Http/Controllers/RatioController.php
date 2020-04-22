@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
-
 class RatioController extends Controller
 {
     function index_ratio(Request $pays){

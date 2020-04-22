@@ -5,41 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property integer $idEntreprise
+ * @property integer $id
  * @property string $numRegistre
- * @property string $codePays
- * @property string $codeRegion
  * @property string $type
- * @property int $numEnregistre
- * @property string $nomEntreprise
- * @property string $Adresse
- * @property string $Tel1
- * @property string $Fax
- * @property string $persressouMail
- * @property string $webSite
- * @property string $boitePostal
+ * @property string $numEnregistre
+ * @property string $entreprise
+ * @property string $sigle
+ * @property string $adresse
+ * @property string $telephone
+ * @property string $fax
+ * @property string $website
+ * @property string $boitePostale
  * @property string $dateCreation
- * @property int $moisCreation
- * @property int $jourCreation
- * @property string $Categorie
- * @property int $idLocalite
- * @property string $Pays
- * @property string $Sigle
- * @property string $Logo
- * @property string $geoLocali
- * @property string $tailleEntreprise
- * @property string $statutEtreprise
- * @property string $dateFin
+ * @property integer $idPays
+ * @property string $created_at
+ * @property string $updated_at
+ * @property Pay $pay
+ * @property Ligneservice[] $ligneservices
  */
 class Entreprise extends Model
 {
-    /**
-     * The primary key for the model.
-     * 
-     * @var string
-     */
-    protected $primaryKey = 'idEntreprise';
-
     /**
      * The "type" of the auto-incrementing ID.
      * 
@@ -48,19 +33,23 @@ class Entreprise extends Model
     protected $keyType = 'integer';
 
     /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
      * @var array
      */
-    protected $fillable = ['numRegistre', 'codePays', 'codeRegion', 'type', 'numEnregistre', 'nomEntreprise', 'Adresse', 'Tel1', 'Fax', 'persressouMail', 'webSite', 'boitePostal', 'dateCreation', 'moisCreation', 'jourCreation', 'Categorie', 'idLocalite', 'Pays', 'Sigle', 'Logo', 'geoLocali', 'tailleEntreprise', 'statutEtreprise', 'dateFin'];
+    protected $fillable = ['numRegistre', 'type', 'numEnregistre', 'entreprise', 'sigle', 'adresse', 'telephone', 'fax', 'website', 'boitePostale', 'dateCreation', 'idPays', 'created_at', 'updated_at'];
 
-    public function rubriques()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function pay()
     {
-        return $this->belongsToMany(Rubrique::class);
+        return $this->belongsTo('App\Models\Pay', 'idPays');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ligneservices()
+    {
+        return $this->hasMany('App\Models\Ligneservice', 'idEntreprise');
     }
 }

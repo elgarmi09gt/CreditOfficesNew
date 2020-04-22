@@ -5,47 +5,42 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property int $idSousclasse
- * @property int $idClasse
- * @property string $nomSousclasse
- * @property string $codeDsc
- * @property string $name
+ * @property integer $id
+ * @property string $codeSousclasse
+ * @property string $sousclasse
+ * @property integer $idClasse
+ * @property string $created_at
+ * @property string $updated_at
+ * @property Class $class
+ * @property Rubrique[] $rubriques
  */
-class SousClasse extends Model
+class Sousclasse extends Model
 {
     /**
-     * The table associated with the model.
+     * The "type" of the auto-incrementing ID.
      * 
      * @var string
      */
-    protected $table = 'sousclasse';
-
-    /**
-     * The primary key for the model.
-     * 
-     * @var string
-     */
-    protected $primaryKey = 'idSousclasse';
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     * 
-     * @var bool
-     */
-    public $incrementing = false;
+    protected $keyType = 'integer';
 
     /**
      * @var array
      */
-    protected $fillable = ['idClasse', 'nomSousclasse', 'codeDsc', 'name'];
+    protected $fillable = ['codeSousclasse', 'sousclasse', 'idClasse', 'created_at', 'updated_at'];
 
-    public function classe()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function class()
     {
-        return $this->belongsTo(Classe::class);
+        return $this->belongsTo('App\Models\Class', 'idClasse');
     }
 
-    public function rubrique()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rubriques()
     {
-        return $this->hasMany(Rubrique::class);
+        return $this->hasMany('App\Models\Rubrique', 'idSousclasse');
     }
 }

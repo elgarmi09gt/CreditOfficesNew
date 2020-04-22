@@ -322,7 +322,7 @@ class SectorActivityController extends Controller
                 ->get('exercice');
         endif;
 
-        $view = view('pages.s_activities.poste');
+        $view = view('pages.secteurs.poste');
         $view->collectEntreprises = $collectEntreprises;
         $view->collectSameNatureEntreprises = $collectSameNatureEntreprises;
         $view->collectUEMOA = $collectUEMOA;

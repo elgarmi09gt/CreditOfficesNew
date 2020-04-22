@@ -4,32 +4,39 @@
     <meta charset="UTF-8">
     <title>Africa B.I.C - @yield('title')</title>
     <link rel="icon" type="image/png" href="{{asset('images/Senegal.ico')}}" />
+
     <!-- Bootstrap -->
-    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="{{asset('css/all.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/app.css')}}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-typeahead/2.11.0/jquery.typeahead.css"
+        integrity="sha256-N5LjnCD3sm17vjUaBNSBY/NCdnsUZpSrLurmlYiQgRI=" crossorigin="anonymous" />
+
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
-    <link rel="stylesheet" href="{{asset('css/bootstrap.css')}}">
-    <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/mdb.css')}}">
-    <link rel="stylesheet" href="{{asset('css/mdb.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/mdb.lite.css')}}">
-    <link rel="stylesheet" href="{{asset('css/mdb.lite.min.css')}}">
-    <script type="text/javascript" src="{{ asset('js/jquery.min.js')}}"></script>
-    <script src="{{url('http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js')}}"></script>
-    <script src="{{url('https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js')}}"></script>
-    <script src="{{url('https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js')}}"></script>
-    <script src="{{url('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js')}}"></script>
-</head>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"
+        integrity="sha256-sqQlcOZwgKkBRRn5WvShSsuopOdq9c3U+StqgPiFhHQ=" crossorigin="anonymous"></script>
+    
+    <script src="{{url('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js')}}">
+        </script>
+
+    
+    </head>
 <body>
 <div class="header">
     <div id="nav">  <!-- début menu -->
-
-        <li>
+        {{-- <li>
             <a href="#">Registre de commerce</a>
             <ul>
                 <li>
@@ -128,22 +135,22 @@
                     <a href="#"><span>RCCM Internationaux</span></a>
                 </li>
             </ul>
-        </li>
+        </li> --}}
         <li>
-            <a href="#">Entreprsises</a>
+            <a href="#">BANQUES</a>
             <ul>
                 <li><a href="#"><span>ANALYSE FINACIER</span></a>
                     <ul>
                         <li>
-                            <a href="{{ route('entreprise.bilan.create',['pays' => $pays])}}">
+                            <a href="{{ route('banque.bilan.create',['pays' => $pays])}}">
                                 <span>Etats Finaciers</span></a>
                         </li>
                         <li>
-                            <a href="{{ route('entreprise.df.bilan.create',['pays' => $pays])}}">
+                            <a href="{{ route('banque.df.bilan.create',['pays' => $pays])}}">
                                 <span>Etats Finaciers - Comparaison</span></a>
                         </li>
                         <li>
-                            <a href="{{ route('entreprise.poste.bilan.create',['pays' => $pays])}}">
+                            <a href="{{ route('banque.poste.bilan.create',['pays' => $pays])}}">
                                 <span>Etats Finaciers - Poste</span></a>
                         </li>
                         <li>
@@ -170,20 +177,97 @@
             </ul>
         </li>
         <li>
-            <a href="#">Secteure D&apos;Activit&eacute</a>
+            <a href="#">SYSCOA</a>
             <ul>
                 <li><a href="#"><span>ANALYSE FINACIER</span></a>
                     <ul>
                         <li>
-                            <a href="{{ route('sa.bilan.create',['pays' => $pays])}}">
+                            <a href="{{ route('syscoa.bilan.create',['pays' => $pays])}}">
                                 <span>Etats Finaciers</span></a>
                         </li>
                         <li>
-                            <a href="{{ route('sa.bilan.df.create',['pays' => $pays])}}">
+                            <a href="{{ route('syscoa.df.bilan.create',['pays' => $pays])}}">
                                 <span>Etats Finaciers - Comparaison</span></a>
                         </li>
                         <li>
-                            <a href="{{ route('sa.bilan.poste.create',['pays' => $pays])}}">
+                            <a href="{{ route('syscoa.poste.bilan.create',['pays' => $pays])}}">
+                                <span>Etats Finaciers - Poste</span></a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>Agr&eacute;gats Finaciers</span></a>
+                        </li>
+                        <li>
+                            <a href="{{ route('entreprise.ratios_res.create',['pays' => $pays])}}">
+                                <span>Agr&eacute;gats Finaciers D&eacute;taill&eacute;</span></a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>Comptabilit&eacute; Nationale</span></a>
+                        </li>
+                        <li>
+                            <a href="{{ route('entreprise.ratio.create', ['pays' => $pays])}}">
+                                <span>Ratios</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#">RECHERCHE</a></li>
+                <li><a href="#">STATISTIQUES</a></li>
+                <li><a href="#">ESPACE ACTEURS</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">GROUPE</a>
+            <ul>
+                <li><a href="#"><span>ANALYSE FINACIER</span></a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('groupe.bilan.create')}}">
+                                <span>Etats Finaciers</span></a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>Etats Finaciers - Comparaison</span></a>
+                        </li>
+                        <li>
+                                <span>Etats Finaciers - Poste</span></a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>Agr&eacute;gats Finaciers</span></a>
+                        </li>
+                        <li>
+                                <span>Agr&eacute;gats Finaciers D&eacute;taill&eacute;</span></a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span>Comptabilit&eacute; Nationale</span></a>
+                        </li>
+                        <li>
+                                <span>Ratios</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#">RECHERCHE</a></li>
+                <li><a href="#">STATISTIQUES</a></li>
+                <li><a href="#">ESPACE ACTEURS</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">SECTEUR D&apos;ACTIVIT&Eacute</a>
+            <ul>
+                <li><a href="#"><span>ANALYSE FINACIER</span></a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('secteur.bilan.create',['pays' => $pays])}}">
+                                <span>Etats Finaciers</span></a>
+                        </li>
+                        <li>
+                            <a href="{{ route('secteur.df.bilan.create',['pays' => $pays])}}">
+                                <span>Etats Finaciers - Comparaison</span></a>
+                        </li>
+                        <li>
+                            <a href="{{ route('secteur.poste.bilan.create',['pays' => $pays])}}">
                                 <span>Etats Finaciers - Poste</span></a>
                         </li>
                         <li>
@@ -209,7 +293,8 @@
                 <li><a href="#">ESPACE ACTEURS</a></li>
             </ul>
         </li>
-        <li><a href="#">Partenaires Economiques</a>
+        {{-- <li>
+            <a href="#">Partenaires Economiques</a>
             <ul>
                 <li><a href="#">CHAMBRES DE COMMERCES </a>
                     <ul>
@@ -234,7 +319,8 @@
                 <li><a href="#">CAISSE DE SECURITE SOCIALE</a></li>
             </ul>
         </li>
-        <li><a href="#">Partenaires Sociaux</a>
+        <li>
+            <a href="#">Partenaires Sociaux</a>
             <ul>
                 <li><a href="#">ANDS</a></li>
                 <li><a href="#">CHAMBRE DES METIERS</a></li>
@@ -253,7 +339,8 @@
                 </li>
             </ul>
         </li>
-        <li><a href="#">Privil&eacute;ges et Nantissements</a>
+        <li>
+            <a href="#">Privil&eacute;ges et Nantissements</a>
             <ul>
                 <li><a href="#">
                         Inscription de privilèges et Nantissements </a></li>
@@ -263,8 +350,7 @@
                         Information sur les Privilèges et Nantissements </a></li>
                 <li><a href="#">Tarif des Privilèges et Nantissements</a></li>
             </ul>
-        </li>
-        
+        </li> --}}
     </div>   <!-- fin menu -->
 </div>
 <div class="#">
@@ -285,11 +371,12 @@
 <div class="#">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <!-- Footer -->
     <footer class="page-footer font-smaller blue ">
         <!-- Copyright -->
         <div class="footer-copyright text-center py-4" style="font-family: 'Times New Roman';font-size: large">© 2019 Copyright:
-            <a href="https://mdbootstrap.com/education/bootstrap/">Analyse Financière</a>
+            <a href="#">Analyse Financière</a>
         </div>
         <!-- Copyright -->
     </footer>
