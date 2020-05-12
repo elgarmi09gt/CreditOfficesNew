@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLignemacroUemoaTable extends Migration
+class CreateMacroAgregatsUemoaTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,14 +16,18 @@ class CreateLignemacroUemoaTable extends Migration
         $BD = array('bic_uemoa','bic_bd_umoa_test');
 
         for ($i = 0; $i < count($BD); $i++) {
-            Schema::connection($BD[$i])->create('lignemacro', function (Blueprint $table) {
-                $table->unsignedBigInteger('idMacro');
+            Schema::connection($BD[$i])->create('macro_agregats', function (Blueprint $table) {
+                $table->unsignedBigInteger('id');
+                $table->string('codeMacro');
+                $table->unsignedBigInteger('idSousecteur');
                 $table->unsignedBigInteger('idPays');
-                $table->year('exercice');
-                $table->decimal('brute', 15, 3);
+                $table->string('macro');
+                $table->text('unite_mesure');
+                $table->text('magnitude');
                 $table->timestamps();
-                $table->primary(['idMacro', 'idPays', 'exercice']);
-                $table->foreign('idMacro')->references('id')->on('macro_agregat')->onDelete('cascade');
+                $table->primary(['id','idPays']);
+
+                $table->foreign('idSousecteur')->references('id')->on('soussecteur_macros')->onDelete('cascade');
                 $table->foreign('idPays')->references('id')->on('pays')->onDelete('cascade');
             });
         }
@@ -39,7 +43,7 @@ class CreateLignemacroUemoaTable extends Migration
         $BD = array('bic_uemoa','bic_bd_umoa_test');
 
         for ($i = 0; $i < count($BD); $i++) {
-            Schema::connection($BD[$i])->dropIfExists('lignemacro');
+            Schema::connection($BD[$i])->dropIfExists('macro_agregats');
         }
     }
 }

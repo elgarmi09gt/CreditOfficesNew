@@ -16,9 +16,13 @@ class ItemsHelpers
             ->first(['entreprise', 'sigle']);
     }
 
-    /*
-     * Number SousClasse For Classe
-     */
+    public static function macroInSouSecteurs($dbs, $idss){
+        return DB::connection($dbs)->table('soussecteur_macros')
+            ->join('macro_agregats', 'idSousecteur', '=', 'soussecteur_macros.id')
+            ->where('soussecteur_macros.id', $idss)
+            ->get(['macro_agregats.id', 'idSousecteur', 'sousecteur', 'macro', 'codeMacro', 'unite_mesure']);
+    }
+
     public static function ClassesInSupClasse($dbs, $supclasse)
     {
         return DB::connection($dbs)->table('supclasses')
@@ -44,14 +48,6 @@ class ItemsHelpers
             ->join('rubriques', 'sousclasses.id', '=', 'rubriques.idSousClasse')
             ->where('sousclasses.id', $sousclasses)
             ->get(['rubriques.idSousClasse', 'sousclasse', 'rubrique', 'rubriques.id']);
-    }
-
-    /*
-     * Format Collection : if empty 0 Else collection->total
-     */
-    public static function FormatBrut($collection)
-    {
-        return !$collection ? 0 : (int)$collection->total;
     }
 
     public static function getNaturePoste($dbs, $rubriques)
@@ -134,4 +130,15 @@ class ItemsHelpers
                 ->get()
         );
     }
+//    Formatage resultat
+    public static function FormatBrut($collection)
+    {
+        return !$collection ? 0 : (int)$collection->total;
+    }
+
+    public static function FormatBrutMacro($collection)
+    {
+        return !$collection ? 0 : round($collection->total,3);
+    }
+
 }

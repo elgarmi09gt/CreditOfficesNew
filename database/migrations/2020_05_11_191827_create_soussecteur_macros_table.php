@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSoussecteursMacroTable extends Migration
+class CreateSoussecteurMacrosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,14 +17,14 @@ class CreateSoussecteursMacroTable extends Migration
             'bic_nigerbd', 'bic_senegalbd', 'bic_togobd','bic_uemoa','bic_bd_umoa_test');
 
         for ($i = 0; $i < count($BD); $i++) {
-            Schema::connection($BD[$i])->create('soussecteurs_macro', function (Blueprint $table) {
+            Schema::connection($BD[$i])->create('soussecteur_macros', function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('codeSouSecteur');
                 $table->string('sousecteur');
                 $table->unsignedBigInteger('idSecteur');
                 $table->timestamps();
 
-                $table->foreign('idSecteur')->references('id')->on('secteurs_macro')->onDelete('cascade');
+                $table->foreign('idSecteur')->references('id')->on('secteur_macros')->onDelete('cascade');
             });
         }
     }
@@ -40,7 +40,7 @@ class CreateSoussecteursMacroTable extends Migration
             'bic_nigerbd', 'bic_senegalbd', 'bic_togobd','bic_uemoa','bic_bd_umoa_test');
 
         for ($i = 0; $i < count($BD); $i++) {
-            Schema::connection($BD[$i])->dropIfExists('soussecteurs_macro');
+            Schema::connection($BD[$i])->dropIfExists('soussecteur_macros');
         }
     }
 }

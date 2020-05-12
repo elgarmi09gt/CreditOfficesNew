@@ -351,6 +351,9 @@
                 <li><a href="#">Tarif des Privilèges et Nantissements</a></li>
             </ul>
         </li> --}}
+        <li>
+            <a href="{{ route('macro.agregat.create',['pays' => $pays])}}">MACROS</a>
+        </li>
     </div>   <!-- fin menu -->
 </div>
 <div class="#">
@@ -362,9 +365,7 @@
             {{-- Formulaires de recherche ici--}}
             @yield("forms")
         </div>
-    </div>
 <br>
-<div class="#">
     {{-- Contenu ici --}}
     @yield("content")
 </div>

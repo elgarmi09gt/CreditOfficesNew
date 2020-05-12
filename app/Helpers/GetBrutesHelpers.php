@@ -68,11 +68,44 @@ class GetBrutesHelpers
         return $a->total;
     }
 
-    /*
-     * ################ FOR NATURE #################
-     *
-     * Calculate SUM(brute) Rubrique Same Nature on Entreprise By Year
-     */
+    public static function getBruteMacro($dbs,$macro,$exercice){
+        return DB::connection($dbs)->table('lignemacros')
+            ->selectRaw('lignemacros.brute as total')
+            ->where('idMacro', $macro)
+            ->where('exercice', $exercice)
+            ->first();
+    }
+
+    public static function getBruteSouSecteurAgreat($dbs,$sousecteur,$exercice){
+        return DB::connection($dbs)->table('soussecteur_macros')
+            ->selectRaw('soussecteur_macros.id,SUM(brute) as total')
+            ->join('macro_agregats', 'soussecteur_macros.id', '=', 'idSouSecteur')
+            ->join('lignemacros', 'idMacro', '=', 'macro_agregats.id')
+            ->where('soussecteur_macros.id', $sousecteur)
+            ->where('exercice', $exercice)
+            ->groupby('soussecteur_macros.id')
+            ->first();
+    }
+
+    public static function getBruteMacroUEMOA($macro, $exercice){
+        return DB::connection('bic_uemoa')->table('lignemacros')
+            ->selectRaw('SUM(lignemacros.brute) as total')
+            ->where('idMacro', $macro)
+            ->where('exercice', $exercice)
+            ->first();
+    }
+
+    public static function getBruteSouSecteurAgreatUEMOA($sousecteur,$exercice){
+        return DB::connection('bic_uemoa')->table('soussecteur_macros')
+            ->selectRaw('soussecteur_macros.id,SUM(brute) as total')
+            ->join('macro_agregats', 'soussecteur_macros.id', '=', 'idSouSecteur')
+            ->join('lignemacros', 'idMacro', '=', 'macro_agregats.id')
+            ->where('soussecteur_macros.id', $sousecteur)
+            ->where('exercice', $exercice)
+            ->groupby('soussecteur_macros.id')
+            ->first();
+    }
+
     public static function getBruteNature($dbs, $nature, $system, $type, $idEntreprise, $exercice)
     {
         return DB::connection($dbs)->table('classes')

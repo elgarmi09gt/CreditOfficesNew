@@ -13,7 +13,8 @@ class CreateLignebilansTable extends Migration
      */
     public function up()
     {
-        $BD = array('bic_bd_test', 'bic_beninbd', 'bic_bissaubd', 'bic_burkinabd', 'bic_coteivoirbd', 'bic_malibd', 'bic_nigerbd', 'bic_senegalbd', 'bic_togobd');
+        $BD = array('bic_bd_test', 'bic_beninbd', 'bic_bissaubd', 'bic_burkinabd', 'bic_coteivoirbd',
+            'bic_malibd', 'bic_nigerbd', 'bic_senegalbd', 'bic_togobd');
    
         for ($i=0; $i < count($BD); $i++) {
             Schema::connection($BD[$i])->create('lignebilans', function (Blueprint $table) {

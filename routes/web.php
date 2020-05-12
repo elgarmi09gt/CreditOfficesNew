@@ -185,3 +185,17 @@ Route::namespace ('Secteur')->prefix('secteur')->as('secteur.')->group(function 
         'as' => 'poste.sector.store',
     ]);
 });
+
+Route::namespace ('Macro')->prefix('macro')->as('macro.')->group(function () {
+
+    // Simple Bilan
+    Route::get('/agregat/{pays?}', [
+        'uses' => 'MacroAgregatController@index',
+        'as' => 'agregat.create',
+    ]);
+
+    Route::post('/agregat', [
+        'uses' => 'MacroAgregatController@store',
+        'as' => 'agregat.store',
+    ]);
+});
