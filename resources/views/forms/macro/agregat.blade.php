@@ -1,5 +1,5 @@
 @extends('templates.master')
-@section('title', 'poste')
+@section('title', 'agregat')
 @section("header")
     @php
         if (!$pays)
