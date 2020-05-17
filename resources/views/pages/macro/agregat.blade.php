@@ -1,4 +1,28 @@
 @include('templates._assets')
+{{--        A faire pour optimisation--}}
+{{--foreach($exo) creer tab de getBruteSouSecteur--}}
+{{--if (uemoa) tableau de getBruteSouSecteur uemoa--}}
+@php
+    $BruteSousSecteur = [];
+    $BruteSousSecteurUEMOA = []
+@endphp
+@if(count($soussecteurs) )
+    @foreach($soussecteurs as $ss)
+        @foreach($exercices as $exo)
+            @php(
+                $BruteSousSecteur [] = ['exercice' => $exo->exercice,
+                    'total' => $FormatBrutMacro($getBruteSouSecteurAgreat($dbs,$ss->id,$exo->exercice))
+                   ])
+            @if($input['localite'] == 'uemoa')
+                @php(
+                    $BruteSousSecteurUEMOA [] = ['exercice' => $exo->exercice,
+                        'total' => $FormatBrutMacro($getBruteSouSecteurAgreatUEMOA($ss->id,$exo->exercice))
+                       ])
+            @endif
+        @endforeach
+    @endforeach
+@endif
+@dd($BruteSousSecteur,$BruteSousSecteurUEMOA)
 <div class="">
     <div class="card">
         <div class="card-body">
@@ -43,7 +67,8 @@
                         @foreach($macroInSouSecteurs($dbs,$soussecteur->id) as $macro)
                             <tr style="text-align: center;">
                                 <td class="flex-md-grow-0">{{ html_entity_decode($macro->codeMacro) }}</td>
-                                <td class="" style="width:100px; text-align: left;">{{ html_entity_decode($macro->macro) }}</td>
+                                <td class=""
+                                    style="width:100px; text-align: left;">{{ html_entity_decode($macro->macro) }}</td>
                                 @foreach($exercices as $exercice)
                                     @if($loop->first && $input['naturep'] == 'paran')
                                         @php($bruteMPcdt = $FormatBrutMacro($getBruteMacro($dbs, $macro->id, $exercice->exercice-1)))
