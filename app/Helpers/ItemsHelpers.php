@@ -138,7 +138,7 @@ class ItemsHelpers
 
     public static function FormatBrutMacro($collection)
     {
-        return !$collection ? 0 : round($collection->total,3);
+        return !$collection ? '0.000' : round($collection->total,3);
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Macro;
 
 use App\Http\Controllers\Controller;
 use App\Models\Macros\Lignemacro;
+use App\Models\Macros\MacroAgregat;
 use App\Models\Macros\SecteurMacro;
 use App\Models\Macros\SoussecteurMacro;
 use App\Models\Pays;
@@ -39,6 +40,8 @@ class MacroAgregatController extends Controller
 
     public function store(Request $request)
     {
+        $countries = collect();
+        $uemoa = false;
         $inputs = $request->all();
         if ($request->get('exercice1') > $request->get('exercice2')) {
             $exercice1 = $request->get('exercice2');
@@ -47,8 +50,20 @@ class MacroAgregatController extends Controller
             $exercice1 = $request->get('exercice1');
             $exercice2 = $request->get('exercice2');
         }
-
         $dbs = getDB($request);
+        $macros = MacroAgregat::on($dbs)->where('macro','=',$request->get('agregat'))
+            ->get();
+        if (!$request->get('localite')):
+            $localite = [];
+        else:
+            $localite = $request->get('localite');
+            for ($i = 0; $i < count($localite); $i++):
+                if ($localite[$i] == 240):
+                    $uemoa = true;
+                endif;
+                $countries = $countries->concat( Pays::on($dbs)->where("id","=",$localite[$i])->cursor());
+            endfor;
+        endif;
         if ($request->get('naturep') == 'paran'):
             $exercices = DB::connection($dbs)->table('lignemacros')
                 ->where('exercice', '>=', $exercice1)
@@ -62,11 +77,11 @@ class MacroAgregatController extends Controller
                 ->groupBy('exercice')
                 ->get('exercice');
         endif;
-        if ($request->get('localite') == 'uemoa'):
+        /*if ($request->get('localite') == 'uemoa'):
             $pays = Pays::on($dbs)->where("cedeao","=","ce")->cursor();
         else:
             $pays = Pays::on($dbs)->where("id","=",$request->get('pays'))->cursor();
-        endif;
+        endif;*/
         $soussecteurs = DB::connection($dbs)
             ->table('soussecteur_macros')
             ->join('secteur_macros', "idSecteur", "=", "secteur_macros.id")
@@ -75,10 +90,15 @@ class MacroAgregatController extends Controller
             ->get(['soussecteur_macros.id','idSecteur','codeSouSecteur','codeSecteur']);
         $view = view('pages.macro.agregat');
         $view->input = $inputs;
+        $view->uemoa = $uemoa;
         $view->request = $request;
+        $view->macros = $macros;
         $view->soussecteurs = $soussecteurs;
-        $view->pays = $pays;
+        if ($countries):
+            $view->countries = $countries;
+        endif;
         $view->dbs = $dbs;
+        $view->localite = $localite;
         $view->exercices = $exercices;
         return $view;
     }

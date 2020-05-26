@@ -51,6 +51,7 @@
         <form action="{{ route('macro.agregat.store', ['pays' => $pays]) }}" method="post" target="indexmacro">
             @csrf
             <div class="row" style="align-content: center">
+                {{--
                 <div class="col col-md-5 offset-1" style="text-align: -moz-center;">
                     <div class="form-group">
                         <label for="" style="font-size:medium;color: #0355AF;
@@ -73,7 +74,7 @@
                     <div class="form-group">
                         <label for="" style="font-size:medium;color: #0355AF;
                               font-weight: bold;font-family: 'Times New Roman, Times, serif';">{{ "SOUS-SECTEURS" }}</label>
-                        {{--                        ############ sous-secteur secteur reel--}}
+--}}{{--                                                ############ sous-secteur secteur reel--}}{{--
                         <div id="sr">
                             @foreach($ss_sr as $sr)
                                 <div class="form-check"
@@ -87,7 +88,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        {{-- ############ Secteur monetaire et finaciers--}}
+--}}{{--                         ############ Secteur monetaire et finaciers--}}{{--
                         <div id="smf">
                             @foreach($ss_smf as $smf)
                                 <div class="form-check"
@@ -100,7 +101,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        {{-- ############--}}
+--}}{{--                         ############--}}{{--
                         <div id="sfp">
                             @foreach($ss_sfp as $sfp)
                                 <div class="form-check"
@@ -113,7 +114,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        {{-- ############--}}
+--}}{{--                         ############--}}{{--
                         <div id="se">
                             @foreach($ss_se as $se)
                                 <div class="form-check"
@@ -126,7 +127,7 @@
                                 </div>
                             @endforeach
                         </div>
-                        {{-- ############--}}
+--}}{{--                         ############--}}{{--
                         <div id="ss">
                             @foreach($ss_ss as $ss)
                                 <div class="form-check"
@@ -140,7 +141,36 @@
                             @endforeach
                         </div>
                     </div>
+                </div>--}}
+            </div>
+            <div class="form-group row">
+                <div class="col col-md-2 col-sm-3"></div>
+                <div class="col col-md-8 col-sm-6">
+                    <div class="row">
+                        <label for="" style="font-size:medium;color: #0355AF;
+                            font-weight: bold;font-family: 'Times New Roman, Times, serif'; text-align: center;">
+                            <strong>
+                                Renseigne l'Agragat À Analyser
+                            </strong>
+                        </label>
+                    </div>
+                    <div class="row">
+                        <input style="font-family: 'Times New Roman';font-size: 17px;height: 50%; width: 80%;"
+                               type="text" class="typeahead form-control" placeholder="Commencer à taper ..."
+                               name="agregat" required autocomplete="off">
+                        <script type="text/javascript">
+                            var path = "{{ route('autocompleteAgragat', ['pays' => $pays]) }}";
+                            $('input.typeahead').typeahead({
+                                source: function (query, process) {
+                                    return $.get(path, {query: query}, function (data) {
+                                        return process(data);
+                                    });
+                                }
+                            });
+                        </script>
+                    </div>
                 </div>
+                <br>
             </div>
             <div class="form-group row">
                 <div class="col col-md-4 offset-1">
@@ -193,7 +223,8 @@
                          style="font-size: medium; font-weight: bold;font-family: 'Times New Roman, Times, serif;'; text-align:center">
                         <label for="paran"><input type="radio" id="paran" name="naturep" value="paran" checked>Par
                             année</label>&nbsp;&nbsp;
-                        <label for="variation"><input type="radio" id="variation" name="naturep" value="variation">Par Variation</label>
+                        <label for="variation"><input type="radio" id="variation" name="naturep" value="variation">Par
+                            Variation</label>
                     </div>
                 </div>
                 <div class="col">
@@ -205,9 +236,10 @@
                             </strong>
                         </label>
                     </div>
-                    <div class="row"
+                    <div class="row form-check"
                          style="font-size: medium; font-weight: bold;font-family: 'Times New Roman, Times, serif;'">
-                        <label for="pays"><input type="radio" id="pays" name="localite" value="pays" checked>
+                        <label for="bn">
+                            {{--<input type="radio" id="pays" name="localite" value="pays" checked>
                             @if($pays == 24) {{'BENIN'}} @endif
                             @if($pays == 34) {{'BURKINA'}} @endif
                             @if($pays == 48) {{'COTE D\'IVOIR'}} @endif
@@ -215,18 +247,35 @@
                             @if($pays == 134) {{'MALI'}} @endif
                             @if($pays == 154) {{'NIGER'}} @endif
                             @if($pays == 201) {{'SENEGAL'}} @endif
-                            @if($pays == 223) {{'TOGO'}} @endif
+                            @if($pays == 223) {{'TOGO'}} @endif--}}
+                            <input type="checkbox" id="bn" name="localite[]" value="24">{{'BENIN'}}
                         </label>&nbsp;&nbsp;
-                        <label for="uemoa"> <input type="radio" id="uemoa" name="localite" value="uemoa">&nbspUEMOA</label>
+                        <label for="bf"><input type="checkbox" id="bf" name="localite[]" value="34">{{'BURKINA'}}
+                        </label>&nbsp;&nbsp;
+                        <label><input type="checkbox" id="pays" name="localite[]" value="48">{{'COTE D\'IVOIR'}}
+                        </label>&nbsp;&nbsp;
+                        <label><input type="checkbox" id="pays" name="localite[]" value="81">{{'GUINNE BISSAU'}}
+                        </label>&nbsp;&nbsp;
+                        <label><input type="checkbox" id="pays" name="localite[]" value="134">{{'MALI'}}
+                        </label>&nbsp;&nbsp;
+                        <label><input type="checkbox" id="pays" name="localite[]" value="154">{{'NIGER'}}
+                        </label>&nbsp;&nbsp;
+                        <label><input type="checkbox" id="pays" name="localite[]" value="201">{{'SENEGAL'}}
+                        </label>&nbsp;&nbsp;
+                        <label><input type="checkbox" id="pays" name="localite[]" value="223">{{'TOGO'}}
+                        </label>&nbsp;&nbsp;
+                        <label> <input type="checkbox" id="pays" name="localite[]" value="240">&nbsp;{{"UEMOA"}}</label>
                     </div>
                 </div>
             </div>
             <div class="form-group row">
-                <div class="col col-md-5"></div>
+                <div class="col col-md-5">
+                </div>
                 <div class="col col-md-2">
                     <button type="submit" class="btn btn-primary" name="ajouter"
                             style="font-family: 'Times New Roman, Times, serif';font-size: 17px">
-                        <i class="fa fa-check"></i>Trouver</button>
+                        <i class="fa fa-check"></i>Trouver
+                    </button>
                 </div>
             </div>
         </form>
@@ -243,6 +292,7 @@
         $("div#ss").hide();
         $("div#sr").show();
     }
+
     function show1() {
         $("div#sr").hide();
         $("div#sfp").hide();
@@ -250,6 +300,7 @@
         $("div#ss").hide();
         $("div#smf").show();
     }
+
     function show2() {
         $("div#smf").hide();
         $("div#sr").hide();
@@ -257,6 +308,7 @@
         $("div#ss").hide();
         $("div#sfp").show();
     }
+
     function show3() {
         $("div#smf").hide();
         $("div#sfp").hide();
@@ -264,6 +316,7 @@
         $("div#ss").hide();
         $("div#se").show();
     }
+
     function show4() {
         $("div#smf").hide();
         $("div#sfp").hide();

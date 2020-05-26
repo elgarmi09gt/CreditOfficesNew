@@ -59,6 +59,19 @@ class ServiceController extends Controller
         return response()->json($dataModified);
     }
 
+    function listeAgregats(Request $request)
+    {
+        $dbs = getDB($request);
+        $agregats = DB::connection($dbs)->table('macro_agregats')
+            ->where('macro', 'LIKE', "%{$request->input('query')}%")
+            ->get(['macro']);
+        $dataModified = array();
+        foreach ($agregats as $agregat) {
+            $dataModified[] = htmlspecialchars($agregat->macro);
+        }
+        return response()->json($dataModified);
+    }
+
     public function fetchPostes(Request $request)
         {
             $dbs = getDB($request);

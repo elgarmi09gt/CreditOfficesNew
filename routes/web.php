@@ -105,6 +105,11 @@ Route::get('b_autocomplete/{pays?}', [
   'uses'    => 'ServiceController@listeBanques',
   'as'      => 'autocompleteBanque'
   ]);
+Route::get('a_autocomplete/{pays?}', [
+  'uses'    => 'ServiceController@listeAgregats',
+  'as'      => 'autocompleteAgragat'
+  ]);
+
 Route::get('sys_autocomplete/{pays?}', [
   'uses' => 'ServiceController@listeSyscoas',
   'as' => 'autocompleteSyscoa',
