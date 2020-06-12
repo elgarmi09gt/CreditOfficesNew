@@ -16,4 +16,7 @@ if (!function_exists('getDB')) {
         }
         return $db;
     }
+    function getPays($id){
+        return DB::table('pays')->where('id', $id)->first();
+    }
 }

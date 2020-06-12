@@ -48,8 +48,8 @@ Route::get('g_autocomplete', 'ServiceController@listeGroupes')->name('autocomple
  * Route for import export
  */
 
- /** All Entreprise traitement */
- Route::namespace ('Entreprise')->prefix('entreprise')->as('entreprise.')->group(function () {
+/** All Entreprise traitement */
+Route::namespace('Entreprise')->prefix('entreprise')->as('entreprise.')->group(function () {
 
     // Simple Bilan
     Route::post('/bilan', [
@@ -73,55 +73,55 @@ Route::get('g_autocomplete', 'ServiceController@listeGroupes')->name('autocomple
 /**
  * For Banque
  */
-Route::namespace ('Banque')->prefix('banque')->as('banque.')->group(function () {
+Route::namespace('Banque')->prefix('banque')->as('banque.')->group(function () {
 
-  // Simple Bilan
+    // Simple Bilan
     Route::get('/bilan/{pays?}', [
-        'uses'  => 'AnalyseFinancierController@index',
-        'as'    => 'bilan.create'
-        ]);
+        'uses' => 'AnalyseFinancierController@index',
+        'as' => 'bilan.create'
+    ]);
 
-      // Bilan Comparaison
-      Route::get('/bilan_df/{pays?}', [
-        'uses'  => 'AnalyseFinancierController@index_bilan_diff',
-        'as'    => 'df.bilan.create'
-        ]);
+    // Bilan Comparaison
+    Route::get('/bilan_df/{pays?}', [
+        'uses' => 'AnalyseFinancierController@index_bilan_diff',
+        'as' => 'df.bilan.create'
+    ]);
 
-      // Bilan Par Poste
-      Route::get('/bilan_poste/{pays?}', [
-        'uses'  => 'AnalyseFinancierController@index_bilan_post',
-        'as'    => 'poste.bilan.create'
-        ]);
+    // Bilan Par Poste
+    Route::get('/bilan_poste/{pays?}', [
+        'uses' => 'AnalyseFinancierController@index_bilan_post',
+        'as' => 'poste.bilan.create'
+    ]);
 
-      Route::get('/ratios/{pays?}', [
+    Route::get('/ratios/{pays?}', [
         'uses' => 'RatioController@index',
         'as' => 'ratio.create'
-        ]);
-      
+    ]);
+
 });
 
 // AutoCompléte liste Entreprise
 Route::get('b_autocomplete/{pays?}', [
-  'uses'    => 'ServiceController@listeBanques',
-  'as'      => 'autocompleteBanque'
-  ]);
+    'uses' => 'ServiceController@listeBanques',
+    'as' => 'autocompleteBanque'
+]);
 Route::get('a_autocomplete/{pays?}', [
-  'uses'    => 'ServiceController@listeAgregats',
-  'as'      => 'autocompleteAgragat'
-  ]);
+    'uses' => 'ServiceController@listeAgregats',
+    'as' => 'autocompleteAgragat'
+]);
 
 Route::get('sys_autocomplete/{pays?}', [
-  'uses' => 'ServiceController@listeSyscoas',
-  'as' => 'autocompleteSyscoa',
-  ]);
+    'uses' => 'ServiceController@listeSyscoas',
+    'as' => 'autocompleteSyscoa',
+]);
 Route::get('sec_autocomplete/{pays?}', [
     'uses' => 'ServiceController@listeSecteurs',
     'as' => 'autocompleteSector',
 ]);
 
 Route::get('post_b_autocomplete/{pays?}', [
-  'uses' => 'ServiceController@listePostesB',
-  'as' => 'autocompletePosteBanque',
+    'uses' => 'ServiceController@listePostesB',
+    'as' => 'autocompletePosteBanque',
 ]);
 
 Route::post('/autocomplete-postes/{pays?}', [
@@ -136,7 +136,7 @@ Route::post('/autocomplete-postes-syscoa/{pays?}', [
 /**
  * For SYSCOA
  */
-Route::namespace ('Syscoa')->prefix('syscoa')->as('syscoa.')->group(function () {
+Route::namespace('Syscoa')->prefix('syscoa')->as('syscoa.')->group(function () {
 
     // Simple Bilan
     Route::get('/bilan_syscoa/{pays?}', [
@@ -149,18 +149,18 @@ Route::namespace ('Syscoa')->prefix('syscoa')->as('syscoa.')->group(function () 
         'uses' => 'AnalyseFinancierController@index_bilan_diff',
         'as' => 'df.bilan.create',
     ]);
-    
+
     // Bilan Par Poste
     Route::get('/bilan_poste_syscoa/{pays?}', [
         'uses' => 'AnalyseFinancierController@index_bilan_post',
         'as' => 'poste.bilan.create',
     ]);
-    
+
 });
 /*
  * For Sector
  * */
-Route::namespace ('Secteur')->prefix('secteur')->as('secteur.')->group(function () {
+Route::namespace('Secteur')->prefix('secteur')->as('secteur.')->group(function () {
 
     // Simple Bilan
     Route::get('/bilan_secteur/{pays?}', [
@@ -191,9 +191,8 @@ Route::namespace ('Secteur')->prefix('secteur')->as('secteur.')->group(function 
     ]);
 });
 
-Route::namespace ('Macro')->prefix('macro')->as('macro.')->group(function () {
+Route::namespace('Macro')->prefix('macro')->as('macro.')->group(function () {
 
-    // Simple Bilan
     Route::get('/agregat/{pays?}', [
         'uses' => 'MacroAgregatController@index',
         'as' => 'agregat.create',
@@ -202,5 +201,15 @@ Route::namespace ('Macro')->prefix('macro')->as('macro.')->group(function () {
     Route::post('/agregat', [
         'uses' => 'MacroAgregatController@store',
         'as' => 'agregat.store',
+    ]);
+
+    Route::get('/agregat_df/{pays?}', [
+        'uses' => 'MacroAgregatController@index',
+        'as' => 'df.agregat.create',
+    ]);
+
+    Route::post('/agregat_df', [
+        'uses' => 'MacroAgregatController@store',
+        'as' => 'agregat_df.store',
     ]);
 });

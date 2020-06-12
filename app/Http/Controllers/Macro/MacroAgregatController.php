@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Macro;
 
 use App\Http\Controllers\Controller;
-use App\Models\Macros\Lignemacro;
 use App\Models\Macros\MacroAgregat;
-use App\Models\Macros\SecteurMacro;
-use App\Models\Macros\SoussecteurMacro;
 use App\Models\Pays;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,25 +13,20 @@ class MacroAgregatController extends Controller
     public function index(Request $pays)
     {
         $dbs = getDB($pays);
-        $secteurs = SecteurMacro::on($dbs)->where("id", "!=", 5)->cursor();
-        $soussecteur_sr = SoussecteurMacro::on($dbs)->where("idSecteur", "=", 1)->cursor();
-        $soussecteur_smf = SoussecteurMacro::on($dbs)->where("idSecteur", "=", 2)->cursor();
-        $soussecteur_sfp = SoussecteurMacro::on($dbs)->where("idSecteur", "=", 3)->cursor();
-        $soussecteur_se = SoussecteurMacro::on($dbs)->where("idSecteur", "=", 4)->cursor();
-        $soussecteur_ss = SoussecteurMacro::on($dbs)->where("idSecteur", "=", 6)->cursor();
-//        $exercices = Lignemacro::on($dbs)->groupBy("exercice")->distinct()->cursor();
         $exercices = DB::connection($dbs)->table('lignemacros')
             ->groupBy('exercice')
             ->get('exercice');
-        $view = view('forms.macro.agregat');
+        $countries = Pays::on($dbs)->where('cedeao','=','ce')
+            ->orderBy('id','desc')
+            ->cursor();
+        if($pays->segment(2) == 'agregat_df'):
+            $view = view('forms.macro.agregat_df');
+        else:
+            $view = view('forms.macro.agregat');
+        endif;
         $view->pays = $pays->pays;
+        $view->countries = $countries;
         $view->exercices = $exercices;
-        $view->ss_sr = $soussecteur_sr;
-        $view->ss_smf = $soussecteur_smf;
-        $view->ss_sfp = $soussecteur_sfp;
-        $view->ss_se = $soussecteur_se;
-        $view->ss_ss = $soussecteur_ss;
-        $view->secteurs = $secteurs;
         return $view;
     }
 
@@ -77,23 +69,16 @@ class MacroAgregatController extends Controller
                 ->groupBy('exercice')
                 ->get('exercice');
         endif;
-        /*if ($request->get('localite') == 'uemoa'):
-            $pays = Pays::on($dbs)->where("cedeao","=","ce")->cursor();
+        if($request->segment(2) == 'agregat_df'):
+            $view = view('pages.macro.agregat_df');
+            $view->pays = getPays($request->get('ref'));
         else:
-            $pays = Pays::on($dbs)->where("id","=",$request->get('pays'))->cursor();
-        endif;*/
-        $soussecteurs = DB::connection($dbs)
-            ->table('soussecteur_macros')
-            ->join('secteur_macros', "idSecteur", "=", "secteur_macros.id")
-            ->where("codeSecteur", "=", $request->get('secteur'))
-            ->where("codeSouSecteur", "=", $request->get('soussecteur'))
-            ->get(['soussecteur_macros.id','idSecteur','codeSouSecteur','codeSecteur']);
-        $view = view('pages.macro.agregat');
+            $view = view('pages.macro.agregat');
+            $view->uemoa = $uemoa;
+        endif;
         $view->input = $inputs;
-        $view->uemoa = $uemoa;
         $view->request = $request;
         $view->macros = $macros;
-        $view->soussecteurs = $soussecteurs;
         if ($countries):
             $view->countries = $countries;
         endif;
@@ -101,5 +86,9 @@ class MacroAgregatController extends Controller
         $view->localite = $localite;
         $view->exercices = $exercices;
         return $view;
+    }
+
+    public function agregat_diff(Request $request){
+        dd($request->all());
     }
 }
